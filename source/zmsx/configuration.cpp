@@ -331,63 +331,63 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingInt(EIntConfigKey key, MusInfo *currSon
 	{
 		default:
 			return false;
-			
+
 #ifdef HAVE_ADL
-		case zmusic_adl_chips_count: 
+		case zmusic_adl_chips_count:
 			ChangeAndReturn(adlConfig.adl_chips_count, value, pRealValue);
 			return devType() == MDEV_ADL;
 
-		case zmusic_adl_emulator_id: 
+		case zmusic_adl_emulator_id:
 			ChangeAndReturn(adlConfig.adl_emulator_id, value, pRealValue);
 			return devType() == MDEV_ADL;
 
-		case zmusic_adl_run_at_pcm_rate: 
+		case zmusic_adl_run_at_pcm_rate:
 			ChangeAndReturn(adlConfig.adl_run_at_pcm_rate, value, pRealValue);
 			return devType() == MDEV_ADL;
 
-		case zmusic_adl_fullpan: 
+		case zmusic_adl_fullpan:
 			ChangeAndReturn(adlConfig.adl_fullpan, value, pRealValue);
 			return devType() == MDEV_ADL;
 
-		case zmusic_adl_bank: 
+		case zmusic_adl_bank:
 			ChangeAndReturn(adlConfig.adl_bank, value, pRealValue);
 			return devType() == MDEV_ADL;
 
-		case zmusic_adl_use_custom_bank: 
+		case zmusic_adl_use_custom_bank:
 			ChangeAndReturn(adlConfig.adl_use_custom_bank, value, pRealValue);
 			return devType() == MDEV_ADL;
 
-		case zmusic_adl_volume_model: 
+		case zmusic_adl_volume_model:
 			ChangeAndReturn(adlConfig.adl_volume_model, value, pRealValue);
 			return devType() == MDEV_ADL;
 #endif
 
-		case zmusic_fluid_reverb: 
+		case zmusic_fluid_reverb:
 			if (currSong != NULL)
 				currSong->ChangeSettingInt("fluidsynth.synth.reverb.active", value);
 
 			ChangeAndReturn(fluidConfig.fluid_reverb, value, pRealValue);
 			return false;
 
-		case zmusic_fluid_chorus: 
+		case zmusic_fluid_chorus:
 			if (currSong != NULL)
 				currSong->ChangeSettingInt("fluidsynth.synth.chorus.active", value);
 
 			ChangeAndReturn(fluidConfig.fluid_chorus, value, pRealValue);
 			return false;
 
-		case zmusic_fluid_voices: 
+		case zmusic_fluid_voices:
 			if (value < 16)
 				value = 16;
 			else if (value > 4096)
 				value = 4096;
-		
+
 			if (currSong != NULL)
 				currSong->ChangeSettingInt("fluidsynth.synth.polyphony", value);
 
 			ChangeAndReturn(fluidConfig.fluid_voices, value, pRealValue);
 			return false;
-			
+
 		case zmusic_fluid_interp:
 			// Values are: 0 = FLUID_INTERP_NONE
 			//             1 = FLUID_INTERP_LINEAR
@@ -425,7 +425,7 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingInt(EIntConfigKey key, MusInfo *currSon
 
 			ChangeAndReturn(fluidConfig.fluid_threads, value, pRealValue);
 			return false;
-			
+
 		case zmusic_fluid_chorus_voices:
 			if (value < 0)
 				value = 0;
@@ -437,17 +437,17 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingInt(EIntConfigKey key, MusInfo *currSon
 
 			ChangeAndReturn(fluidConfig.fluid_chorus_voices, value, pRealValue);
 			return false;
-			
+
 		case zmusic_fluid_chorus_type:
 			if (value != FLUID_CHORUS_MOD_SINE && value != FLUID_CHORUS_MOD_TRIANGLE)
 				value = FLUID_CHORUS_DEFAULT_TYPE;
-	
+
 			if (currSong != NULL)
 				currSong->ChangeSettingNum("fluidsynth.z.chorus", value); // Uses float to simplify the checking code in the renderer.
 
 			ChangeAndReturn(fluidConfig.fluid_chorus_type, value, pRealValue);
 			return false;
-			
+
 #ifdef HAVE_OPL
 		case zmusic_opl_numchips:
 			if (value <= 0)
@@ -500,7 +500,7 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingInt(EIntConfigKey key, MusInfo *currSon
 		case zmusic_gus_midi_voices:
 			ChangeAndReturn(gusConfig.midi_voices, value, pRealValue);
 			return devType() == MDEV_GUS;
-		
+
 		case zmusic_gus_memsize:
 			ChangeAndReturn(gusConfig.gus_memsize, value, pRealValue);
 			return devType() == MDEV_GUS;
@@ -662,16 +662,16 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingFloat(EFloatConfigKey key, MusInfo* cur
 	{
 		default:
 			return false;
-			
-		case zmusic_fluid_gain: 
+
+		case zmusic_fluid_gain:
 			if (value < 0)
 				value = 0;
 			else if (value > 10)
 				value = 10;
-		
+
 			if (currSong != NULL)
 				currSong->ChangeSettingNum("fluidsynth.synth.gain", value);
-		
+
 			ChangeAndReturn(fluidConfig.fluid_gain, value, pRealValue);
 			return false;
 
@@ -716,7 +716,7 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingFloat(EFloatConfigKey key, MusInfo* cur
 				value = 0;
 			else if (value > 1)
 				value = 1;
-		
+
 			if (currSong != NULL)
 				currSong->ChangeSettingNum("fluidsynth.z.reverb", value);
 
@@ -816,17 +816,17 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingString(EStringConfigKey key, MusInfo* c
 	{
 		default:
 			return false;
-			
+
 #ifdef HAVE_ADL
-		case zmusic_adl_custom_bank: 
+		case zmusic_adl_custom_bank:
 			adlConfig.adl_custom_bank = value;
 			return devType() == MDEV_ADL;
 #endif
-		case zmusic_fluid_lib: 
+		case zmusic_fluid_lib:
 			fluidConfig.fluid_lib = value;
 			return false; // only takes effect for next song.
 
-		case zmusic_fluid_patchset: 
+		case zmusic_fluid_patchset:
 			fluidConfig.fluid_patchset = value;
 #ifdef HAVE_TIMIDITY
 			if (timidityConfig.timidity_config.empty()) timidityConfig.timidity_config = value; // Also use for Timidity++ if nothing has been set.
@@ -834,7 +834,7 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingString(EStringConfigKey key, MusInfo* c
 			return devType() == MDEV_FLUIDSYNTH;
 
 #ifdef HAVE_OPN
-		case zmusic_opn_custom_bank: 
+		case zmusic_opn_custom_bank:
 			opnConfig.opn_custom_bank = value;
 			return devType() == MDEV_OPN && opnConfig.opn_use_custom_bank;
 #endif
@@ -862,7 +862,7 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingString(EStringConfigKey key, MusInfo* c
 	return false;
 }
 
-static ZMusicConfigurationSetting config[] = {
+static ZMSXConfigurationSetting config[] = {
 #ifdef HAVE_ADL
 	{"zmusic_adl_chips_count", zmusic_adl_chips_count, ZMUSIC_VAR_INT, 5},
 	{"zmusic_adl_emulator_id", zmusic_adl_emulator_id, ZMUSIC_VAR_INT, 0},
@@ -956,7 +956,7 @@ static ZMusicConfigurationSetting config[] = {
 	{}
 };
 
-DLL_EXPORT const ZMusicConfigurationSetting* ZMusic_GetConfiguration()
+DLL_EXPORT const ZMSXConfigurationSetting* ZMusic_GetConfiguration()
 {
 	return config;
 }

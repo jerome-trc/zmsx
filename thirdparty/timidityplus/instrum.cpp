@@ -27,7 +27,7 @@
 #include <math.h>
 #include <string.h>
 
-#include "../../../source/zmusic/fileio.h"
+#include "../../../source/zmsx/fileio.h"
 #include "timidity.h"
 #include "common.h"
 #include "instrum.h"
@@ -306,7 +306,7 @@ void Instruments::apply_bank_parameter(Instrument *ip, ToneBankElement *tone)
 {
 	int i, j;
 	Sample *sp;
-	
+
 	if (tone->tunenum)
 		for (i = 0; i < ip->samples; i++) {
 			sp = &ip->sample[i];
@@ -620,7 +620,7 @@ Instrument *Instruments::load_gus_instrument(char *name, ToneBank *bank, int dr,
 		}
 	/* Open patch file */
 	tf = open_file(name, sfreader);
-	if (!tf) 
+	if (!tf)
 	{
 		int name_len, ext_len;
 		static const char *patch_ext[] = { ".pat", 0 };
@@ -628,10 +628,10 @@ Instrument *Instruments::load_gus_instrument(char *name, ToneBank *bank, int dr,
 		noluck = 1;
 		name_len = (int)strlen(name);
 		/* Try with various extensions */
-		for (i = 0; patch_ext[i]; i++) 
+		for (i = 0; patch_ext[i]; i++)
 		{
 			ext_len = (int)strlen(patch_ext[i]);
-			if (name_len + ext_len < 1024) 
+			if (name_len + ext_len < 1024)
 			{
 				if (name_len >= ext_len && strcmp(name + name_len - ext_len,
 					patch_ext[i]) == 0)
@@ -647,7 +647,7 @@ Instrument *Instruments::load_gus_instrument(char *name, ToneBank *bank, int dr,
 			}
 		}
 	}
-	if (noluck) 
+	if (noluck)
 	{
 		printMessage(CMSG_INFO, VERB_DEBUG, "Instrument `%s' can't be found.", name);
 		return 0;
@@ -1342,7 +1342,7 @@ void Instruments::free_tone_bank_list(ToneBank *tb[])
 {
 	int i, j;
 	ToneBank *bank;
-	
+
 	for (i = 0; i < 128 + map_bank_counter; i++)
 	{
 		bank = tb[i];
@@ -1612,7 +1612,7 @@ int Instruments::alloc_instrument_map_bank(int dr, int map, int bk)
 {
 	struct bank_map_elem *bm;
 	int i;
-	
+
 	if (map == INST_NO_MAP)
 	{
 		alloc_instrument_bank(dr, bk);
@@ -1947,11 +1947,11 @@ void Instruments::recompute_userinst(int bank, int prog)
 	auto source_prog = p->source_prog;
 	free_tone_bank_element(&tonebank[bank]->tone[prog]);
 	if (tonebank[source_bank]) {
-		if (tonebank[source_bank]->tone[source_prog].name) 
+		if (tonebank[source_bank]->tone[source_prog].name)
 		{
 			copy_tone_bank_element(&tonebank[bank]->tone[prog], &tonebank[source_bank]->tone[source_prog]);
 		}
-		else if (tonebank[0]->tone[source_prog].name) 
+		else if (tonebank[0]->tone[source_prog].name)
 		{
 			copy_tone_bank_element(&tonebank[bank]->tone[prog], &tonebank[0]->tone[source_prog]);
 		}
@@ -2006,11 +2006,11 @@ Instrument *Instruments::recompute_userdrum(int bank, int prog)
 			}
 			source_tone->instrument = ip;
 		}
-		if (source_tone->name) 
+		if (source_tone->name)
 		{
 			copy_tone_bank_element(&drumset[bank]->tone[prog], source_tone);
 		}
-		else if (drumset[0]->tone[source_note].name) 
+		else if (drumset[0]->tone[source_note].name)
 		{
 			copy_tone_bank_element(&drumset[bank]->tone[prog], &drumset[0]->tone[source_note]);
 		}

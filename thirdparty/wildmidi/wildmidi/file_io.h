@@ -27,7 +27,7 @@
 #ifndef __FILE_IO_H
 #define __FILE_IO_H
 
-#include "../../../source/zmusic/fileio.h"
+#include "../../../source/zmsx/fileio.h"
 
 namespace WildMidi
 {

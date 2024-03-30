@@ -36,7 +36,7 @@
 
 #include <algorithm>
 #include "midisource.h"
-#include "zmusic/m_swap.h"
+#include "zmsx/m_swap.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ MIDSSong::MIDSSong(const uint8_t* data, size_t len)
 
     // Validate the header first.
     if (data[12] != 'f' || data[13] != 'm' || data[14] != 't' || data[15] != ' ')
-    {        
+    {
         return;
     }
     int headerSize = LittleLong(GetInt(&data[16]));
@@ -183,10 +183,10 @@ uint32_t* MIDSSong::MakeEvents(uint32_t* events, uint32_t* max_event_p, uint32_t
     {
         events[0] = time = MidsBuffer[MidsP++];
         events[1] = FormatFlags ? 0 : MidsBuffer[MidsP++];
-        events[2] = MidsBuffer[MidsP++];        
+        events[2] = MidsBuffer[MidsP++];
         events += 3;
         tot_time += time;
-        if (MidsP >= MaxMidsP) break;               
+        if (MidsP >= MaxMidsP) break;
     }
     return events;
 }

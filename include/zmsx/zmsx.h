@@ -1,5 +1,5 @@
-#ifndef __ZMUSIC_H_
-#define __ZMUSIC_H_
+#ifndef ZMSX_H
+#define ZMSX_H
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -263,18 +263,18 @@ typedef enum ZMusicVariableType_
 	ZMUSIC_VAR_STRING,
 } ZMusicVariableType;
 
-typedef struct ZMusicConfigurationSetting_
+typedef struct ZMSXConfigurationSetting_
 {
 	const char* name;
 	int identifier;
 	ZMusicVariableType type;
 	float defaultVal;
 	const char* defaultString;
-} ZMusicConfigurationSetting;
+} ZMSXConfigurationSetting;
 
 
 #ifndef ZMUSIC_INTERNAL
-#if defined(_MSC_VER) && !defined(ZMUSIC_STATIC)
+#if defined(_MSC_VER) && !defined(ZMSX_STATIC)
 #define DLL_IMPORT _declspec(dllimport)
 #else
 #define DLL_IMPORT
@@ -302,7 +302,7 @@ extern "C"
 	DLL_IMPORT void ZMusic_SetDmxGus(const void* data, unsigned len);
 
 	// Returns an array with all available configuration options - terminated with an empty entry where all elements are 0.
-	DLL_IMPORT const ZMusicConfigurationSetting* ZMusic_GetConfiguration();
+	DLL_IMPORT const ZMSXConfigurationSetting* ZMusic_GetConfiguration();
 
 	// These exports are needed by the MIDI dumpers which need to remain on the client side because the need access to the client's file system.
 	DLL_IMPORT EMIDIType ZMusic_IdentifyMIDIType(uint32_t* id, int size);
@@ -395,7 +395,7 @@ typedef void (*pfn_ZMusic_SetCallbacks)(const ZMusicCallbacks* callbacks);
 typedef void (*pfn_ZMusic_SetGenMidi)(const uint8_t* data);
 typedef void (*pfn_ZMusic_SetWgOpn)(const void* data, unsigned len);
 typedef void (*pfn_ZMusic_SetDmxGus)(const void* data, unsigned len);
-typedef const ZMusicConfigurationSetting* (*pfn_ZMusic_GetConfiguration)();
+typedef const ZMSXConfigurationSetting* (*pfn_ZMusic_GetConfiguration)();
 typedef EMIDIType (*pfn_ZMusic_IdentifyMIDIType)(uint32_t* id, int size);
 typedef ZMusic_MidiSource (*pfn_ZMusic_CreateMIDISource)(const uint8_t* data, size_t length, EMIDIType miditype);
 typedef zmusic_bool (*pfn_ZMusic_MIDIDumpWave)(ZMusic_MidiSource source, EMidiDevice devtype, const char* devarg, const char* outname, int subsong, int samplerate);

@@ -31,12 +31,12 @@
 **
 */
 
-#include "zmusic/zmusic_internal.h"
-#include "zmusic/musinfo.h"
+#include "zmsx/zmusic_internal.h"
+#include "zmsx/musinfo.h"
 
 #ifdef _WIN32
 
-#include "zmusic/m_swap.h"
+#include "zmsx/m_swap.h"
 #include "win32/i_cd.h"
 
 

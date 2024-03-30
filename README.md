@@ -1,14 +1,13 @@
-# ZMusic
-GZDoom's music system as a standalone library
+# ZMSX
 
-Welcome! This repository is a library for use with the projects [GZDoom](https://github.com/coelckers/GZDoom), [Raze](https://github.com/coelckers/Raze), and the newer [PrBoom+](https://github.com/coelckers/prboom-plus).
+A fork of ZMusic, GZDoom's MIDI music system as a standalone library.
 
 Compile instructions are pretty simple for most systems.
 
 ```
-git clone https://github.com/coelckers/ZMusic.git
-mkdir ZMusic/build
-cd ZMusic/build
+git clone https://github.com/jerome-trc/zmsx.git
+mkdir zmsx/build
+cd zmsx/build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build .
 ```

@@ -37,8 +37,8 @@
 #include <algorithm>
 #include <assert.h>
 #include "midisource.h"
-#include "zmusic/zmusic_internal.h"
-#include "zmusic/m_swap.h"
+#include "zmsx/zmusic_internal.h"
+#include "zmsx/m_swap.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -98,7 +98,7 @@ struct HMISong::TrackInfo
 	bool Enabled;
 	bool Finished;
 	uint8_t RunningStatus;
-    
+
 	uint32_t ReadVarLenHMI();
 	uint32_t ReadVarLenHMP();
 };
@@ -167,7 +167,7 @@ void HMISong::SetupForHMI(int len)
 	}
 
 	// The division is the number of pulses per quarter note (PPQN).
-	// HMI files have two values here, a full value and a quarter value. Some games, 
+	// HMI files have two values here, a full value and a quarter value. Some games,
 	// notably Quarantines, have identical values for some reason, so it's safer to
 	// use the quarter value and multiply it by four than to trust the full value.
 	Division = GetShort(MusPtr + HMI_DIVISION_OFFSET) << 2;

@@ -1,7 +1,7 @@
 #pragma once
 #define ZMUSIC_INTERNAL
 
-#if defined(_MSC_VER) && !defined(ZMUSIC_STATIC)
+#if defined(_MSC_VER) && !defined(ZMSX_STATIC)
 #define DLL_EXPORT __declspec(dllexport)
 #define DLL_IMPORT __declspec(dllexport)	// without this the compiler complains.
 #else
@@ -16,7 +16,7 @@ typedef class MusInfo *ZMusic_MusicStream;
 // Lite only  uses FluidSynth for MIDI playback and is licensed under the LGPL v2.1
 // Full uses all MIDI synths and is licensed under the GPL v3.
 
-#ifndef ZMUSIC_LITE
+#ifndef ZMSX_LITE
 #define HAVE_GUS		// legally viable but not really useful
 #define HAVE_TIMIDITY	// GPL v2.0
 #define HAVE_OPL		// GPL v3.0

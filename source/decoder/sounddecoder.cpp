@@ -33,7 +33,7 @@
 */
 
 
-#include "zmusic/zmusic_internal.h"
+#include "zmsx/zmusic_internal.h"
 #include "sndfile_decoder.h"
 #include "mpg123_decoder.h"
 

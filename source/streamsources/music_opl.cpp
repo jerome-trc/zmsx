@@ -41,7 +41,7 @@
 #include "oplsynth/opl.h"
 #include "oplsynth/opl_mus_player.h"
 #include "fileio.h"
-#include "zmusic/midiconfig.h"
+#include "zmsx/midiconfig.h"
 
 //==========================================================================
 //

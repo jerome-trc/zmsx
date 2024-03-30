@@ -3,15 +3,15 @@
 // Anything streamed to the sound system as raw wave data, except MIDIs --------------------
 
 #include <stdlib.h>
-#include "zmusic/mididefs.h"	// for StreamSourceInfo
-#include "zmusic/midiconfig.h"
+#include "zmsx/mididefs.h"	// for StreamSourceInfo
+#include "zmsx/midiconfig.h"
 
 class StreamSource
 {
 protected:
 	bool m_Looping = true;
 	int m_OutputRate;
-	
+
 public:
 
 	StreamSource (int outputRate) { m_OutputRate = outputRate; }

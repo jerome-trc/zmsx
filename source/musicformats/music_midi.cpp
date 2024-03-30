@@ -38,8 +38,8 @@
 #include <stdexcept>
 #include <string>
 #include <assert.h>
-#include "zmusic/zmusic_internal.h"
-#include "zmusic/musinfo.h"
+#include "zmsx/zmusic_internal.h"
+#include "zmsx/musinfo.h"
 #include "mididevices/mididevice.h"
 #include "midisources/midisource.h"
 #include "critsec.h"
@@ -205,12 +205,12 @@ bool MIDIStreamer::IsValid() const
 EMidiDevice MIDIStreamer::SelectMIDIDevice(EMidiDevice device)
 {
 	/* MIDI are played as:
-		- OPL: 
-			- if explicitly selected by $mididevice 
+		- OPL:
+			- if explicitly selected by $mididevice
 			- when snd_mididevice  is -3 and no midi device is set for the song
 
-		- Timidity: 
-			- if explicitly selected by $mididevice 
+		- Timidity:
+			- if explicitly selected by $mididevice
 			- when snd_mididevice  is -2 and no midi device is set for the song
 
 		- MMAPI (Win32 only):
@@ -464,7 +464,7 @@ void MIDIStreamer::StartPlayback()
 	auto data = source->PrecacheData();
 	MIDI->PrecacheInstruments(data.data(), (int)data.size());
 	source->StartPlayback(m_Looping);
-	
+
 	// Set time division and tempo.
 	if (0 != MIDI->SetTimeDiv(source->getDivision()) ||
 		0 != MIDI->SetTempo(source->getInitialTempo()))
@@ -952,7 +952,7 @@ void MIDIStreamer::SetMIDISource(MIDISource *_source)
 	source->setTempoCallback([=](int tempo) { return !!MIDI->SetTempo(tempo); } );
 }
 
-int MIDIStreamer::GetDeviceType() const 
+int MIDIStreamer::GetDeviceType() const
 {
 	return nullptr == MIDI
 		? MusInfo::GetDeviceType()

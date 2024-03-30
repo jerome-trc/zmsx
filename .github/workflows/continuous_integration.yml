@@ -38,12 +38,12 @@ jobs:
           build_type: Release
           cmake_options: -DDYN_FLUIDSYNTH=OFF -DDYN_MPG123=OFF -DDYN_SNDFILE=OFF
           deps_cmd: sudo apt update && sudo apt install libasound2-dev libglib2.0-dev libmpg123-dev libsndfile1-dev
-          
+
         - name: Linux Clang - Dynamic Deps
           os: ubuntu-latest
           build_type: Release
           cmake_options: -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++
-          
+
         - name: Linux Clang - Static Deps
           os: ubuntu-latest
           build_type: Release
@@ -82,7 +82,7 @@ jobs:
           declare -x DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${PREFIX}
         fi
         if [[ "${{ runner.os }}" == 'Windows' ]]; then
-          cp ${PREFIX}/bin/zmusic.dll ${{ matrix.config.build_type }}
+          cp ${PREFIX}/bin/zmsx.dll ${{ matrix.config.build_type }}
           ${{ matrix.config.build_type }}/list_midi_devices.exe
         else
           ./list_midi_devices

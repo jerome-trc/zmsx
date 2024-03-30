@@ -4,7 +4,7 @@ if (VCPKG_LIBSNDFILE)
 	list(APPEND VCPKG_MANIFEST_FEATURES "vcpkg-libsndfile")
 endif()
 
-project(ZMusic
+project(ZMSX
 	VERSION 1.1.12
 	LANGUAGES C CXX
 )
@@ -34,7 +34,7 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 	# Enable install rules
-	set(ZMUSIC_INSTALL ON)
+	set(ZMSX_INSTALL ON)
 else()
 	# This project is being vendored by another project, set option default if
 	# the parent project doesn't provide them.
@@ -46,8 +46,8 @@ else()
 	# Although install rules can be avoided with EXCLUDE_FROM_ALL on
 	# add_subdirectory, the EXPORT rules may place certain usage requirements on
 	# targets shared between the two projects.
-	if(NOT DEFINED ZMUSIC_INSTALL)
-		set(ZMUSIC_INSTALL OFF)
+	if(NOT DEFINED ZMSX_INSTALL)
+		set(ZMSX_INSTALL OFF)
 	endif()
 endif()
 
@@ -70,8 +70,8 @@ endif()
 
 if(MSVC)
 	#  optionally generate assembly output for checking crash locations.
-	option(ZMUSIC_GENERATE_ASM "Generate assembly output." OFF)
-	if(ZMUSIC_GENERATE_ASM)
+	option(ZMSX_GENERATE_ASM "Generate assembly output." OFF)
+	if(ZMSX_GENERATE_ASM)
 		add_compile_options("/FAcs")
 	endif()
 
@@ -126,31 +126,31 @@ else()
 endif()
 
 # Initialize our list of find_package dependencies for configure_package_config_file
-set(ZMUSIC_PACKAGE_DEPENDENCIES "" CACHE INTERNAL "")
+set(ZMSX_PACKAGE_DEPENDENCIES "" CACHE INTERNAL "")
 
 add_subdirectory(thirdparty)
 add_subdirectory(source)
 
 write_basic_package_version_file(
-	${CMAKE_CURRENT_BINARY_DIR}/ZMusicConfigVersion.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/ZMSXConfigVersion.cmake
 	VERSION ${PROJECT_VERSION}
 	COMPATIBILITY SameMajorVersion
 )
 configure_package_config_file(
-	cmake/ZMusicConfig.cmake.in
-	${CMAKE_CURRENT_BINARY_DIR}/ZMusicConfig.cmake
+	cmake/ZMSXConfig.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/ZMSXConfig.cmake
 	INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake
 )
-if(ZMUSIC_INSTALL)
-	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ZMusicConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/ZMusicConfigVersion.cmake
-		DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ZMusic
+if(ZMSX_INSTALL)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ZMSXConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/ZMSXConfigVersion.cmake
+		DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ZMSX
 		COMPONENT devel
 	)
 endif()
 
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	set(CPACK_PACKAGE_CONTACT "First Last <example@example.com>" CACHE STRING "Contact info for archive maintainer.")
-	set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "GZDoom's music system as a standalone library")
+	set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Fork of the ZMusic library")
 	string(TOLOWER "${PROJECT_NAME}" CPACK_PACKAGE_NAME)
 	set(CPACK_PACKAGE_NAME "lib${CPACK_PACKAGE_NAME}")
 	# Use same prefix for packaging for consistency
@@ -170,7 +170,7 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 		set(CPACK_DEB_COMPONENT_INSTALL ON)
 		set(CPACK_DEBIAN_ENABLE_COMPONENT_DEPENDS ON)
 		set(CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT")
-		set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://zdoom.org")
+		set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/jerome-trc/zmsx")
 		set(CPACK_DEBIAN_PACKAGE_SECTION "libs")
 		set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 		set(CPACK_DEBIAN_PACKAGE_CONTROL_STRICT_PERMISSION ON)

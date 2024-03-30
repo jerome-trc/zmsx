@@ -36,7 +36,7 @@
 
 #include <stdexcept>
 #include "mididevice.h"
-#include "zmusic/zmusic_internal.h"
+#include "zmsx/zmusic_internal.h"
 
 #ifdef HAVE_WILDMIDI
 
@@ -55,16 +55,16 @@ class WildMIDIDevice : public SoftSynthMIDIDevice
 public:
 	WildMIDIDevice(int samplerate);
 	~WildMIDIDevice();
-	
+
 	int OpenRenderer() override;
 	void PrecacheInstruments(const uint16_t *instruments, int count) override;
 	std::string GetStats() override;
 	int GetDeviceType() const override { return MDEV_WILDMIDI; }
-	
+
 protected:
 	WildMidi::Renderer *Renderer;
 	std::shared_ptr<WildMidi::Instruments> instruments;
-	
+
 	void HandleEvent(int status, int parm1, int parm2) override;
 	void HandleLongEvent(const uint8_t *data, int len) override;
 	void ComputeOutput(float *buffer, int len) override;

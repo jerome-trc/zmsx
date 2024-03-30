@@ -39,8 +39,8 @@
 #include <condition_variable>
 
 #include "mididevice.h"
-#include "zmusic/m_swap.h"
-#include "zmusic/mus2midi.h"
+#include "zmsx/m_swap.h"
+#include "zmsx/mus2midi.h"
 #include "zmusic_internal.h"
 
 #include "music_alsa_state.h"

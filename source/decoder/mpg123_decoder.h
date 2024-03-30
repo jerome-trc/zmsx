@@ -1,7 +1,7 @@
 #ifndef MPG123_DECODER_H
 #define MPG123_DECODER_H
 
-#include "zmusic/sounddecoder.h"
+#include "zmsx/sounddecoder.h"
 
 #ifdef HAVE_MPG123
 

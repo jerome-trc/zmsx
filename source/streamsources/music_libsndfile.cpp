@@ -38,7 +38,7 @@
 #include <algorithm>
 #include "zmusic_internal.h"
 #include "streamsource.h"
-#include "zmusic/sounddecoder.h"
+#include "zmsx/sounddecoder.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ public:
 	std::string GetStats() override;
 	SoundStreamInfoEx GetFormatEx() override;
 	bool GetData(void *buffer, size_t len) override;
-	
+
 protected:
 	SoundDecoder *Decoder;
 	unsigned int FrameSize;
@@ -482,15 +482,15 @@ SndFileSong::~SndFileSong()
 std::string SndFileSong::GetStats()
 {
 	char out[80];
-	
+
 	ChannelConfig chanconf;
 	SampleType stype;
 	int srate;
 	Decoder->getInfo(&srate, &chanconf, &stype);
-	
+
 	size_t SamplePos = Decoder->getSampleOffset();
 	int time = int (SamplePos / srate);
-	
+
 	snprintf(out, 80,
 		"Track: %s, %dHz  Time: %02d:%02d",
 		ZMusic_ChannelConfigName(chanconf), srate,
@@ -508,7 +508,7 @@ std::string SndFileSong::GetStats()
 bool SndFileSong::GetData(void *vbuff, size_t len)
 {
 	char *buff = (char*)vbuff;
-	
+
 	size_t currentpos = Decoder->getSampleOffset();
 	size_t framestoread = len / FrameSize;
 	bool err = false;

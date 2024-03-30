@@ -38,7 +38,7 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include "midisource.h"
-#include "zmusic/zmusic_internal.h"
+#include "zmsx/zmusic_internal.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ struct MIDISong2::TrackInfo
 	uint32_t LoopDelay;
 	int LoopCount;
 	bool LoopFinished;
-    
+
 	uint32_t ReadVarLen ();
 };
 
@@ -770,7 +770,7 @@ MIDISong2::TrackInfo *MIDISong2::FindNextDue ()
 	{
 	case 0:
 		return Tracks[0].Finished ? nullptr : Tracks.data();
-		
+
 	case 1:
 		track = nullptr;
 		best = 0xFFFFFFFF;

@@ -35,7 +35,7 @@
 
 #include <algorithm>
 #include "midisource.h"
-#include "zmusic/m_swap.h"
+#include "zmsx/m_swap.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -239,7 +239,7 @@ uint32_t *MUSSong2::MakeEvents(uint32_t *events, uint32_t *max_event_p, uint32_t
 		uint8_t channel;
 		uint8_t t = 0, status;
 		uint8_t event = MusBuffer[MusP++];
-		
+
 		if ((event & 0x70) != MUS_SCOREEND)
 		{
 			t = MusBuffer[MusP++];
@@ -265,7 +265,7 @@ uint32_t *MUSSong2::MakeEvents(uint32_t *events, uint32_t *max_event_p, uint32_t
 			mid1 = t;
 			mid2 = 0;
 			break;
-			
+
 		case MUS_NOTEON:
 			status |= MIDI_NOTEON;
 			mid1 = t & 127;
@@ -275,19 +275,19 @@ uint32_t *MUSSong2::MakeEvents(uint32_t *events, uint32_t *max_event_p, uint32_t
 			}
 			mid2 = LastVelocity[channel];
 			break;
-			
+
 		case MUS_PITCHBEND:
 			status |= MIDI_PITCHBEND;
 			mid1 = (t & 1) << 6;
 			mid2 = (t >> 1) & 127;
 			break;
-			
+
 		case MUS_SYSEVENT:
 			status |= MIDI_CTRLCHANGE;
 			mid1 = CtrlTranslate[t];
 			mid2 = t == 12 ? LittleShort(MusHeader->NumChans) : 0;
 			break;
-			
+
 		case MUS_CTRLCHANGE:
 			if (t == 0)
 			{ // program change
@@ -307,7 +307,7 @@ uint32_t *MUSSong2::MakeEvents(uint32_t *events, uint32_t *max_event_p, uint32_t
 				}
 			}
 			break;
-			
+
 		case MUS_SCOREEND:
 		default:
 			MusP = MaxMusP;

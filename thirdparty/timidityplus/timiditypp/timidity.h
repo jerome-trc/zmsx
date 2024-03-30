@@ -30,7 +30,7 @@
 
 #include "controls.h"
 #include "mblock.h"
-#include "../../../source/zmusic/critsec.h"
+#include "../../../source/zmsx/critsec.h"
 #include <mutex>
 #include <stdint.h>
 
@@ -40,7 +40,7 @@
 
 
 
-/* 
+/*
    Table of contents:
    (1) Flags and definitions to customize timidity
    (3) inportant definitions not to customize

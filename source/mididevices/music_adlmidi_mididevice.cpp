@@ -37,7 +37,7 @@
 #include <stdexcept>
 #include <stdlib.h>
 
-#include "zmusic/zmusic_internal.h"
+#include "zmsx/zmusic_internal.h"
 #include "mididevice.h"
 
 #ifdef HAVE_ADL
@@ -52,16 +52,16 @@ class ADLMIDIDevice : public SoftSynthMIDIDevice
 public:
 	ADLMIDIDevice(const ADLConfig *config);
 	~ADLMIDIDevice();
-	
+
 	int OpenRenderer() override;
 	int GetDeviceType() const override { return MDEV_ADL; }
 
 protected:
-	
+
 	void HandleEvent(int status, int parm1, int parm2) override;
 	void HandleLongEvent(const uint8_t *data, int len) override;
 	void ComputeOutput(float *buffer, int len) override;
-	
+
 private:
 	int LoadCustomBank(const ADLConfig *config);
 };

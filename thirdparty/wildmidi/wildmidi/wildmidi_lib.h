@@ -27,7 +27,7 @@
 #ifndef WILDMIDI_LIB_H
 #define WILDMIDI_LIB_H
 
-#include "../../../source/zmusic/fileio.h"
+#include "../../../source/zmsx/fileio.h"
 #include <stdarg.h>
 
 namespace WildMidi
@@ -39,7 +39,7 @@ enum EMixerOptions
 	WM_MO_REVERB		= 0x0004,
 	WM_MO_WHOLETEMPO	= 0x8000,
 	WM_MO_ROUNDTEMPO	= 0x2000,
-	
+
 	WM_GS_VERSION		= 0x0001,
 };
 
@@ -55,7 +55,7 @@ struct _WM_Info {
 };
 
 typedef void midi;
-	
+
 struct Instruments
 {
 	MusicIO::SoundFontReaderInterface *sfreader;
@@ -63,14 +63,14 @@ struct Instruments
 	struct _patch *patch[128] = {};
 	float reverb_room_width = 16.875f;
 	float reverb_room_length = 22.5f;
-	
+
 	float reverb_listen_posx = 8.4375f;
 	float reverb_listen_posy = 16.875f;
-	
+
 	int fix_release = 0;
 	int auto_amp = 0;
 	int auto_amp_with_amp = 0;
-	
+
 	unsigned short int _WM_SampleRate;	// WildMidi makes the sample rate a property of the patches, not the renderer. Meaning that the instruments need to be reloaded when it changes... :?
 
 	Instruments(MusicIO::SoundFontReaderInterface *reader, int samplerate)
@@ -79,7 +79,7 @@ struct Instruments
 		_WM_SampleRate = samplerate;
 	}
 	~Instruments();
-	
+
 	int LoadConfig(const char *config_file);
 	int load_sample(struct _patch *sample_patch);
 	struct _patch *get_patch_data(unsigned short patchid);
@@ -112,13 +112,13 @@ public:
 	void LoadInstrument(int bank, int percussion, int instr);
 	int GetVoiceCount();
 	int SetOption(int opt, int set);
-	
+
 	void SetMasterVolume(unsigned char master_volume);
 	midi * NewMidi();
 
 private:
 	void *handle;
-	
+
 	void AdjustNoteVolumes(struct _mdi *mdi, unsigned char ch, struct _note *nte);
 	void AdjustChannelVolumes(struct _mdi *mdi, unsigned char ch);
 	void do_note_on(struct _mdi *mdi, struct _event_data *data);
@@ -139,7 +139,7 @@ private:
 	unsigned long int get_inc(struct _mdi *mdi, struct _note *nte);
 };
 
-extern void (*wm_error_func)(const char *wmfmt, va_list args); 
+extern void (*wm_error_func)(const char *wmfmt, va_list args);
 }
 
 #endif /* WILDMIDI_LIB_H */

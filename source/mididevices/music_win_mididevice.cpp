@@ -44,8 +44,8 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include "mididevice.h"
-#include "zmusic/m_swap.h"
-#include "zmusic/mus2midi.h"
+#include "zmsx/m_swap.h"
+#include "zmsx/mus2midi.h"
 
 #ifndef __GNUC__
 #include <mmdeviceapi.h>
@@ -517,7 +517,7 @@ int WinMIDIDevice::PrepareHeader(MidiHeader *header)
 	syshdr->dwBufferLength = header->dwBufferLength;
 	syshdr->dwBytesRecorded = header->dwBytesRecorded;
 	// this device does not use the lpNext pointer to link MIDI events so use it to point to the system data structure.
-	header->lpNext = (MidiHeader*)syshdr;	
+	header->lpNext = (MidiHeader*)syshdr;
 	return midiOutPrepareHeader((HMIDIOUT)MidiOut, syshdr, sizeof(MIDIHDR));
 }
 

@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include "../../../source/zmusic/fileio.h"
+#include "../../../source/zmsx/fileio.h"
 
 
 namespace TimidityPlus

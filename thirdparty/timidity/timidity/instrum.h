@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../source/zmusic/fileio.h"
+#include "../../../source/zmsx/fileio.h"
 
 namespace Timidity
 {

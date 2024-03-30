@@ -1,8 +1,8 @@
 #pragma once
 
 #include <mutex>
-#include "zmusic/midiconfig.h"
-#include "zmusic/mididefs.h"
+#include "zmsx/midiconfig.h"
+#include "zmsx/mididefs.h"
 
 typedef void(*MidiCallback)(void *);
 

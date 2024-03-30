@@ -30,7 +30,7 @@
 #include "sffile.h"
 #include "sflayer.h"
 #include "sfitem.h"
-#include "../../../source/zmusic/fileio.h"
+#include "../../../source/zmsx/fileio.h"
 
 
 namespace TimidityPlus

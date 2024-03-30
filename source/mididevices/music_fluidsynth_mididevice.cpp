@@ -38,9 +38,9 @@
 #include <stdexcept>
 #include <stdio.h>
 #include <stdlib.h>
-#include "zmusic/zmusic_internal.h"
+#include "zmsx/zmusic_internal.h"
 #include "mididevice.h"
-#include "zmusic/mus2midi.h"
+#include "zmsx/mus2midi.h"
 #include "loader/i_module.h"
 
 // FluidSynth implementation of a MIDI device -------------------------------
@@ -54,20 +54,20 @@ class FluidSynthMIDIDevice : public SoftSynthMIDIDevice
 public:
 	FluidSynthMIDIDevice(int samplerate, std::vector<std::string> &config);
 	~FluidSynthMIDIDevice();
-	
+
 	int OpenRenderer() override;
 	std::string GetStats() override;
 	void ChangeSettingInt(const char *setting, int value) override;
 	void ChangeSettingNum(const char *setting, double value) override;
 	void ChangeSettingString(const char *setting, const char *value) override;
 	int GetDeviceType() const override { return MDEV_FLUIDSYNTH; }
-	
+
 protected:
 	void HandleEvent(int status, int parm1, int parm2) override;
 	void HandleLongEvent(const uint8_t *data, int len) override;
 	void ComputeOutput(float *buffer, int len) override;
 	int LoadPatchSets(const std::vector<std::string>& config);
-	
+
 	fluid_settings_t *FluidSettings;
 	fluid_synth_t *FluidSynth;
 
@@ -197,7 +197,7 @@ void FluidSynthMIDIDevice::HandleEvent(int status, int parm1, int parm2)
 {
 	int command = status & 0xF0;
 	int channel = status & 0x0F;
-	
+
 	switch (command)
 	{
 	case MIDI_NOTEOFF:

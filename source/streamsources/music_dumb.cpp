@@ -45,9 +45,9 @@
 #undef CDECL	// w32api's windef.h defines this
 #include "../dumb/include/dumb.h"
 #include "../dumb/include/internal/it.h"
-#include "zmusic/m_swap.h"
-#include "zmusic/mididefs.h"
-#include "zmusic/midiconfig.h"
+#include "zmsx/m_swap.h"
+#include "zmsx/mididefs.h"
+#include "zmsx/midiconfig.h"
 #include "fileio.h"
 
 // MACROS ------------------------------------------------------------------
@@ -282,7 +282,7 @@ static bool ReadIT(const uint8_t * ptr, unsigned size, DumbSong *info, bool meta
 
 	uint32_t * offset;
 //	std::string name;
-	
+
 	if (meta)
 	{
 		offset = (uint32_t *)(ptr + 0xC0 + LittleShort(pifh->ordnum) + LittleShort(pifh->insnum) * 4);
@@ -961,7 +961,7 @@ bool DumbSong::GetData(void *buffer, size_t sizebytes)
 		memset(buffer, 0, sizebytes);
 		return false;
 	}
-	
+
 	while (sizebytes > 0)
 	{
 		int written = decode_run(buffer, (unsigned)sizebytes / 8);

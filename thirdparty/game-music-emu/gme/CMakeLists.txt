@@ -157,7 +157,7 @@ set (EXPORTED_HEADERS gme.h)
 # we're building the library or merely using the library. The following is
 # only defined when building the library to allow us to tell which is which.
 
-#[ZMusic] Not needed
+# [ZMusic] Not needed
 #add_definitions(-DBLARGG_BUILD_DLL)
 
 # For the gme_types.h

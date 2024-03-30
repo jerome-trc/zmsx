@@ -34,7 +34,7 @@
 
 #include <stdexcept>
 #include "mididevice.h"
-#include "zmusic/zmusic_internal.h"
+#include "zmsx/zmusic_internal.h"
 
 #ifdef HAVE_TIMIDITY
 
@@ -103,7 +103,7 @@ void TimidityPPMIDIDevice::LoadInstruments()
 //
 //==========================================================================
 
-TimidityPPMIDIDevice::TimidityPPMIDIDevice(int samplerate) 
+TimidityPPMIDIDevice::TimidityPPMIDIDevice(int samplerate)
 	:SoftSynthMIDIDevice(samplerate, 4000, 65000)
 {
 	TimidityPlus::set_playback_rate(SampleRate);

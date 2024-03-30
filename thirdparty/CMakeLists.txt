@@ -10,7 +10,7 @@ add_subdirectory(miniz)
 #if(GME_FOUND AND NOT FORCE_INTERNAL_GME)
 #	message(STATUS "Using system gme library, includes found at ${GME_INCLUDE_DIRS}")
 #	set_property(TARGET gme PROPERTY IMPORTED_GLOBAL TRUE)
-#	determine_package_config_dependency(ZMUSIC_PACKAGE_DEPENDENCIES TARGET gme MODULE GME)
+#	determine_package_config_dependency(ZMSX_PACKAGE_DEPENDENCIES TARGET gme MODULE GME)
 #else()
 #	message(STATUS "Using internal gme library")
 	# Use MAME as it's a balanced emulator: well-accurate, but doesn't eats lot of CPU

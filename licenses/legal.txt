@@ -1,4 +1,4 @@
-ZMusic is licensed under the GPLv3.
+ZMSX is licensed under the GPLv3.
 
 The majority of original code uses a BSD-like lincese. See bsd.txt.
 
@@ -19,7 +19,7 @@ version used by the foobar2000 component foo_dumb as of mid-2008, found at
 http://kode54.foobar2000.org/.
 
 
-ZMusic Lite is a feature reduced version that omits all content that is not
+ZMSX Lite is a feature reduced version that omits all content that is not
 compatible with the LGPL v2.1. Use this if your project cannot comply with the GPL.
 This means that most of the available MIDI synths, except FluidSynth, have been removed
 and that the playback of native OPL file types is disabled.

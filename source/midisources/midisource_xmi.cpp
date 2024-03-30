@@ -35,8 +35,8 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include "midisource.h"
-#include "zmusic/mididefs.h"
-#include "zmusic/m_swap.h"
+#include "zmsx/mididefs.h"
+#include "zmsx/m_swap.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ struct XMISong::TrackInfo
 
 	LoopInfo ForLoops[MAX_FOR_DEPTH];
 	int ForDepth;
-    
+
 	uint32_t ReadVarLen();
 	uint32_t ReadDelay();
 };

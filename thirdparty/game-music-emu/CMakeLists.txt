@@ -19,7 +19,7 @@ if(COMPILER_IS_GNUCXX_COMPATIBLE)
     endif()
 endif()
 
-#[ZMusic] Disable most of bogus and annoying MSVC warnings
+# [ZMusic] Disable most of bogus and annoying MSVC warnings
 if(MSVC)
     add_compile_options(/wd4101 /wd4800 /wd4702 /wd4706 /wd4805 /wd4310 /wd4244 /wd4456 /wd4459 /wd4146 /wd4127 /wd4458 /wd4267 /wd4804)
 endif()

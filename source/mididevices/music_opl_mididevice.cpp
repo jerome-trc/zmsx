@@ -36,9 +36,9 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include <stdexcept>
-#include "zmusic/zmusic_internal.h"
+#include "zmsx/zmusic_internal.h"
 #include "mididevice.h"
-#include "zmusic/mus2midi.h"
+#include "zmsx/mus2midi.h"
 
 #ifdef HAVE_OPL
 #include "oplsynth/opl.h"

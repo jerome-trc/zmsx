@@ -36,7 +36,7 @@
 
 #include <stdexcept>
 #include "mididevice.h"
-#include "zmusic/zmusic_internal.h"
+#include "zmsx/zmusic_internal.h"
 
 #ifdef HAVE_OPN
 #include "opnmidi.h"
@@ -49,16 +49,16 @@ class OPNMIDIDevice : public SoftSynthMIDIDevice
 public:
 	OPNMIDIDevice(const OpnConfig *config);
 	~OPNMIDIDevice();
-	
-	
+
+
 	int OpenRenderer() override;
 	int GetDeviceType() const override { return MDEV_OPN; }
-	
+
 protected:
 	void HandleEvent(int status, int parm1, int parm2) override;
 	void HandleLongEvent(const uint8_t *data, int len) override;
 	void ComputeOutput(float *buffer, int len) override;
-	
+
 private:
 	int LoadCustomBank(const OpnConfig *config);
 };
@@ -247,7 +247,7 @@ MIDIDevice *CreateOPNMIDIDevice(const char *Args)
 	{
 		const char* info;
 		if (musicCallbacks.PathForSoundfont)
-		{ 
+		{
 			info = musicCallbacks.PathForSoundfont(bank, SF_WOPN);
 		}
 		else

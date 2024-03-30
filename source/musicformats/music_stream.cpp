@@ -1,6 +1,6 @@
 /*
 ** music_stream.cpp
-** Plays a streaming song from a StreamSource 
+** Plays a streaming song from a StreamSource
 **
 **---------------------------------------------------------------------------
 ** Copyright 2008 Randy Heit
@@ -32,8 +32,8 @@
 **---------------------------------------------------------------------------
 */
 
-#include "zmusic/musinfo.h"
-#include "zmusic/zmusic_internal.h"
+#include "zmsx/musinfo.h"
+#include "zmsx/zmusic_internal.h"
 #include "streamsources/streamsource.h"
 
 class StreamSong : public MusInfo
@@ -56,9 +56,9 @@ public:
 	bool ServiceStream(void* buff, int len) override;
 	SoundStreamInfoEx GetStreamInfoEx() const override { return m_Source->GetFormatEx(); }
 
-	
+
 protected:
-	
+
 	StreamSource *m_Source = nullptr;
 };
 

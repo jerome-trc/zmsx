@@ -1,7 +1,7 @@
 #ifndef SNDFILE_DECODER_H
 #define SNDFILE_DECODER_H
 
-#include "zmusic/sounddecoder.h"
+#include "zmsx/sounddecoder.h"
 
 #ifdef HAVE_SNDFILE
 
