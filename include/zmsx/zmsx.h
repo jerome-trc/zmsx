@@ -10,7 +10,7 @@ struct SoundDecoder;	// Anonymous to the client.
 typedef unsigned char zmusic_bool;
 
 // These constants must match the corresponding values of the Windows headers
-// to avoid readjustment in the native Windows device's playback functions 
+// to avoid readjustment in the native Windows device's playback functions
 // and should not be changed.
 typedef enum EMidiDeviceClass_
 {
@@ -59,7 +59,7 @@ typedef enum ESoundFontTypes_
 
 typedef struct SoundStreamInfo_
 {
-	int mBufferSize;	// If mBufferSize is 0, the song doesn't use streaming but plays through a different interface. 
+	int mBufferSize;	// If mBufferSize is 0, the song doesn't use streaming but plays through a different interface.
 	int mSampleRate;
 	int mNumChannels;	// If mNumChannels is negative, 16 bit integer format is used instead of floating point.
 } SoundStreamInfo;
@@ -148,7 +148,7 @@ typedef enum EIntConfigKey_
 	zmusic_mod_autochip_scan_threshold,
 
 	zmusic_snd_streambuffersize,
-	
+
 	zmusic_snd_mididevice,
 	zmusic_snd_outputrate,
 
@@ -226,7 +226,7 @@ typedef struct ZMusicCallbacks_
 {
 	// Callbacks the client can install to capture messages from the backends
 	// or to provide sound font data.
-	
+
 	void (*MessageFunc)(int severity, const char* msg);
 	// The message callbacks are optional, without them the output goes to stdout.
 
@@ -343,7 +343,7 @@ extern "C"
 	DLL_IMPORT size_t SoundDecoder_Read(struct SoundDecoder* decoder, void* buffer, size_t length);
 	DLL_IMPORT void SoundDecoder_Close(struct SoundDecoder* decoder);
 	DLL_IMPORT void FindLoopTags(const uint8_t* data, size_t size, uint32_t* start, zmusic_bool* startass, uint32_t* end, zmusic_bool* endass);
-	// The rest of the decoder interface is only useful for streaming music. 
+	// The rest of the decoder interface is only useful for streaming music.
 
 	DLL_IMPORT const ZMusicMidiOutDevice *ZMusic_GetMidiDevices(int *pAmount);
 	DLL_IMPORT int ZMusic_GetADLBanks(const char* const** pNames);

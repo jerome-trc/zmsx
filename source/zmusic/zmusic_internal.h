@@ -25,7 +25,7 @@ typedef class MusInfo *ZMusic_MusicStream;
 #define HAVE_WILDMIDI	// LGPL v3.0
 #endif
 
-#include "zmusic.h"
+#include "zmsx/zmsx.h"
 #include "fileio.h"
 
 void SetError(const char *text);
