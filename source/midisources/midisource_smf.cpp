@@ -38,7 +38,7 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include "midisource.h"
-#include "zmsx/zmusic_internal.h"
+#include "zmsx/zmsx.hpp"
 
 // MACROS ------------------------------------------------------------------
 

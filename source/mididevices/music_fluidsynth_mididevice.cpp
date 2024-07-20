@@ -38,7 +38,7 @@
 #include <stdexcept>
 #include <stdio.h>
 #include <stdlib.h>
-#include "zmsx/zmusic_internal.h"
+#include "zmsx/zmsx.hpp"
 #include "mididevice.h"
 #include "zmsx/mus2midi.h"
 #include "loader/i_module.h"

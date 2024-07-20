@@ -1,5 +1,8 @@
+/// @file
+/// @brief C++ header of symbols common to several source files.
+
 #pragma once
-#define ZMUSIC_INTERNAL
+#define ZMSX_HPP
 
 #if defined(_MSC_VER) && !defined(ZMSX_STATIC)
 #define DLL_EXPORT __declspec(dllexport)
@@ -25,7 +28,7 @@ typedef class MusInfo *ZMusic_MusicStream;
 #define HAVE_WILDMIDI	// LGPL v3.0
 #endif
 
-#include "zmsx/zmsx.h"
+#include "zmsx.h"
 #include "fileio.h"
 
 void SetError(const char *text);

@@ -38,7 +38,7 @@
 #include <stdexcept>
 #include <string>
 #include <assert.h>
-#include "zmsx/zmusic_internal.h"
+#include "zmsx/zmsx.hpp"
 #include "zmsx/musinfo.h"
 #include "mididevices/mididevice.h"
 #include "midisources/midisource.h"

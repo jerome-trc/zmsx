@@ -38,7 +38,7 @@
 #include <string>
 #include <miniz.h>
 #include "m_swap.h"
-#include "zmusic_internal.h"
+#include "zmsx.hpp"
 #include "midiconfig.h"
 #include "musinfo.h"
 #include "streamsources/streamsource.h"

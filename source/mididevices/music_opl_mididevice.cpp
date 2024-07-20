@@ -36,7 +36,7 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include <stdexcept>
-#include "zmsx/zmusic_internal.h"
+#include "zmsx/zmsx.hpp"
 #include "mididevice.h"
 #include "zmsx/mus2midi.h"
 

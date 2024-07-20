@@ -31,7 +31,7 @@
 **---------------------------------------------------------------------------
 */
 
-#include "zmusic_internal.h"
+#include "zmsx.hpp"
 
 #ifdef HAVE_OPL
 

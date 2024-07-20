@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "zmusic_internal.h"
+#include "zmsx.hpp"
 #include "fileio.h"
 
 // Note: Bools here are stored as ints to allow having a simpler interface.
@@ -76,7 +76,7 @@ struct GUSConfig
 	std::string gus_patchdir;
 	std::string gus_config;
 	std::vector<uint8_t> dmxgus;				// can contain the contents of a DMXGUS lump that may be used as the instrument set. In this case gus_patchdir must point to the location of the GUS data and gus_dmxgus must be true.
-	
+
 	// This is the instrument cache for the GUS synth.
 	MusicIO::SoundFontReaderInterface *reader;
 	std::string readerName;

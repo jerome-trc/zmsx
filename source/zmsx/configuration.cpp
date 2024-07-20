@@ -40,7 +40,7 @@
 #include "critsec.h"
 #include "dumb.h"
 
-#include "zmusic_internal.h"
+#include "zmsx.hpp"
 #include "musinfo.h"
 #include "midiconfig.h"
 #include "mididevices/music_alsa_state.h"

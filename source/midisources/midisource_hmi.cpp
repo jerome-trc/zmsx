@@ -37,7 +37,7 @@
 #include <algorithm>
 #include <assert.h>
 #include "midisource.h"
-#include "zmsx/zmusic_internal.h"
+#include "zmsx/zmsx.hpp"
 #include "zmsx/m_swap.h"
 
 // MACROS ------------------------------------------------------------------

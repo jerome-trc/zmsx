@@ -273,7 +273,7 @@ typedef struct ZMSXConfigurationSetting_
 } ZMSXConfigurationSetting;
 
 
-#ifndef ZMUSIC_INTERNAL
+#ifndef ZMSX_HPP
 #if defined(_MSC_VER) && !defined(ZMSX_STATIC)
 #define DLL_IMPORT _declspec(dllimport)
 #else

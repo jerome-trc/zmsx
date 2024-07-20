@@ -3,7 +3,7 @@
 #include <string>
 #include <mutex>
 #include "mididefs.h"
-#include "zmsx/zmusic_internal.h"
+#include "zmsx/zmsx.hpp"
 #include "critsec.h"
 
 // The base music class. Everything is derived from this --------------------

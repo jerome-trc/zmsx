@@ -37,7 +37,7 @@
 #include <stdexcept>
 #include <stdlib.h>
 #include "mididevice.h"
-#include "zmsx/zmusic_internal.h"
+#include "zmsx/zmsx.hpp"
 
 #ifdef HAVE_GUS
 

@@ -36,7 +36,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 #include <stdlib.h>
-#include "zmusic_internal.h"
+#include "zmsx.hpp"
 #include "helperthread.h"
 #include "i_cd.h"
 

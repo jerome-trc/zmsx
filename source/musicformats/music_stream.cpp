@@ -33,7 +33,7 @@
 */
 
 #include "zmsx/musinfo.h"
-#include "zmsx/zmusic_internal.h"
+#include "zmsx/zmsx.hpp"
 #include "streamsources/streamsource.h"
 
 class StreamSong : public MusInfo

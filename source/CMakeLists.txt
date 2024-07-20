@@ -33,7 +33,7 @@ INTERFACE
 	decoder/sndfile_decoder.cpp
 	decoder/mpg123_decoder.cpp
 	zmsx/configuration.cpp
-	zmsx/zmusic.cpp
+	zmsx/zmsx.cpp
 	zmsx/critsec.cpp
 	loader/test.c
 )
@@ -159,7 +159,7 @@ target_compile_definitions(zmsxlite PRIVATE ZMSX_LITE=1 PUBLIC $<$<STREQUAL:$<TA
 set_target_properties(zmsx zmsxlite
 PROPERTIES
 	MACOSX_RPATH ON
-	PUBLIC_HEADER ../include/zmsx/zmsx.h
+	PUBLIC_HEADER ../include/zmsx.h
 	VERSION ${PROJECT_VERSION}
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 )

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "zmusic_internal.h"
+#include "zmsx.hpp"
 #include <vector>
 
 struct SoundDecoder

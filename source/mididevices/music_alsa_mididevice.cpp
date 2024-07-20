@@ -41,7 +41,7 @@
 #include "mididevice.h"
 #include "zmsx/m_swap.h"
 #include "zmsx/mus2midi.h"
-#include "zmusic_internal.h"
+#include "zmsx.hpp"
 
 #include "music_alsa_state.h"
 #include <alsa/asoundlib.h>
