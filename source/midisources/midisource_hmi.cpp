@@ -354,11 +354,11 @@ void HMISong::SetupForHMP(int len)
 void HMISong::CheckCaps(int tech)
 {
 	// What's the equivalent HMI device for our technology?
-	if (tech == MIDIDEV_FMSYNTH)
+	if (tech == zmsx_devcls_fmsynth)
 	{
 		tech = HMI_DEV_OPL3;
 	}
-	else if (tech == MIDIDEV_MIDIPORT)
+	else if (tech == zmsx_devcls_midiport)
 	{
 		tech = HMI_DEV_MPU401;
 	}

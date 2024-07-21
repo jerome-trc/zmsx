@@ -302,7 +302,7 @@ void MIDISource::CreateSMF(std::vector<uint8_t> &file, int looplimit)
 	uint8_t running_status = 255;
 
 	// Always create songs aimed at GM devices.
-	CheckCaps(MIDIDEV_MIDIPORT);
+	CheckCaps(zmsx_devcls_midiport);
 	LoopLimit = looplimit <= 0 ? EXPORT_LOOP_LIMIT : looplimit;
 	DoRestart();
 	StartPlayback(false, LoopLimit);

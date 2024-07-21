@@ -37,16 +37,16 @@
 #include <alsa/asoundlib.h>
 #include <sstream>
 
-EMidiDeviceClass MidiOutDeviceInternal::GetDeviceClass() const
+zmsx_MidiDeviceClass MidiOutDeviceInternal::GetDeviceClass() const
 {
 	if (type & SND_SEQ_PORT_TYPE_SYNTH)
-		return MIDIDEV_FMSYNTH;
+		return zmsx_devcls_fmsynth;
 	if (type & (SND_SEQ_PORT_TYPE_DIRECT_SAMPLE|SND_SEQ_PORT_TYPE_SAMPLE))
-		return MIDIDEV_SYNTH;
+		return zmsx_devcls_synth;
 	if (type & (SND_SEQ_PORT_TYPE_MIDI_GENERIC|SND_SEQ_PORT_TYPE_APPLICATION))
-		return MIDIDEV_MIDIPORT;
+		return zmsx_devcls_midiport;
 	// assume FM synth otherwise
-	return MIDIDEV_FMSYNTH;
+	return zmsx_devcls_fmsynth;
 }
 
 AlsaSequencer & AlsaSequencer::Get() {

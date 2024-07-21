@@ -189,25 +189,25 @@ struct MidiDeviceList
 	void Build()
 	{
 #ifdef HAVE_OPN
-		devices.push_back({ strdup("libOPN"), -8, MIDIDEV_FMSYNTH });
+		devices.push_back({ strdup("libOPN"), -8, zmsx_devcls_fmsynth });
 #endif
 #ifdef HAVE_ADL
-		devices.push_back({ strdup("libADL"), -7, MIDIDEV_FMSYNTH });
+		devices.push_back({ strdup("libADL"), -7, zmsx_devcls_fmsynth });
 #endif
 #ifdef HAVE_WILDMIDI
-		devices.push_back({ strdup("WildMidi"), -6, MIDIDEV_SWSYNTH });
+		devices.push_back({ strdup("WildMidi"), -6, zmsx_devcls_swsynth });
 #endif
 		// this will always exist.
-		devices.push_back({ strdup("FluidSynth"), -5, MIDIDEV_SWSYNTH });
+		devices.push_back({ strdup("FluidSynth"), -5, zmsx_devcls_swsynth });
 
 #ifdef HAVE_GUS
-		devices.push_back({ strdup("GUS Emulation"), -4, MIDIDEV_SWSYNTH });
+		devices.push_back({ strdup("GUS Emulation"), -4, zmsx_devcls_swsynth });
 #endif
 #ifdef HAVE_OPL
-		devices.push_back({ strdup("OPL Synth Emulation"), -3, MIDIDEV_FMSYNTH });
+		devices.push_back({ strdup("OPL Synth Emulation"), -3, zmsx_devcls_fmsynth });
 #endif
 #ifdef HAVE_TIMIDITY
-		devices.push_back({ strdup("TiMidity++"), -2, MIDIDEV_SWSYNTH });
+		devices.push_back({ strdup("TiMidity++"), -2, zmsx_devcls_swsynth });
 #endif
 
 #ifdef HAVE_SYSTEM_MIDI
@@ -217,7 +217,7 @@ struct MidiDeviceList
 		auto& dev = sequencer.GetInternalDevices();
 		for (auto& d : dev)
 		{
-			ZMusicMidiOutDevice mdev = { strdup(d.Name.c_str()), d.ID, MIDIDEV_MAPPER };	// fixme: Correctly determine the type of the device.
+			ZMusicMidiOutDevice mdev = { strdup(d.Name.c_str()), d.ID, zmsx_devcls_mapper };	// fixme: Correctly determine the type of the device.
 			devices.push_back(mdev);
 		}
 #elif _WIN32

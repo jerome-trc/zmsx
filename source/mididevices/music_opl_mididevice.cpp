@@ -138,7 +138,7 @@ void OPLMIDIDevice::Close()
 
 int OPLMIDIDevice::GetTechnology() const
 {
-	return MIDIDEV_FMSYNTH;
+	return zmsx_devcls_fmsynth;
 }
 
 //==========================================================================

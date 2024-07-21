@@ -194,7 +194,7 @@ enum
 
 void MIDISong2::CheckCaps(int tech)
 {
-	if (tech == MIDIDEV_FMSYNTH)
+	if (tech == zmsx_devcls_fmsynth)
 	{
 		DesignationMask = 1 << EMIDI_Adlib;
 	}

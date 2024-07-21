@@ -12,16 +12,15 @@ typedef unsigned char zmusic_bool;
 // These constants must match the corresponding values of the Windows headers
 // to avoid readjustment in the native Windows device's playback functions
 // and should not be changed.
-typedef enum EMidiDeviceClass_
-{
-	MIDIDEV_MIDIPORT = 1,
-	MIDIDEV_SYNTH,
-	MIDIDEV_SQSYNTH,
-	MIDIDEV_FMSYNTH,
-	MIDIDEV_MAPPER,
-	MIDIDEV_WAVETABLE,
-	MIDIDEV_SWSYNTH
-} EMidiDeviceClass;
+typedef enum zmsx_MidiDeviceClass_ {
+	zmsx_devcls_midiport = 1,
+	zmsx_devcls_synth,
+	zmsx_devcls_sqsynth,
+	zmsx_devcls_fmsynth,
+	zmsx_devcls_mapper,
+	zmsx_devcls_wavetable,
+	zmsx_devcls_swsynth
+} zmsx_MidiDeviceClass;
 
 typedef enum EMIDIType_
 {

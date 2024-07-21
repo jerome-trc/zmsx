@@ -148,7 +148,7 @@ bool SoftSynthMIDIDevice::IsOpen() const
 
 int SoftSynthMIDIDevice::GetTechnology() const
 {
-	return MIDIDEV_SWSYNTH;
+	return zmsx_devcls_swsynth;
 }
 
 //==========================================================================
@@ -389,7 +389,7 @@ bool SoftSynthMIDIDevice::ServiceStream (void *buff, int numbytes)
 			numsamples -= samplesleft;
 			samples1 += samplesleft * 2;
 		}
-		
+
 		if (NextTickIn < 1)
 		{
 			int next = PlayTick();
