@@ -1,6 +1,6 @@
 ---
 BasedOnStyle: Microsoft
-ColumnLimit: 100
+ColumnLimit: 90
 IndentWidth: 4
 TabWidth: 4
 ---
@@ -12,6 +12,7 @@ AlignConsecutiveDeclarations: false
 AlignConsecutiveMacros: false
 AlignEscapedNewlines: Left
 AlignTrailingComments: false
+AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Empty
@@ -45,8 +46,7 @@ Cpp11BracedListStyle: false
 DerivePointerAlignment: false
 EmptyLineBeforeAccessModifier: LogicalBlock
 FixNamespaceComments: true
-# TODO: (Rat) how badly would this break the build if enabled?
-# IncludeBlocks: Regroup
+IncludeBlocks: Regroup
 IndentCaseLabels: false
 IndentGotoLabels: false
 IndentWrappedFunctionNames: true
