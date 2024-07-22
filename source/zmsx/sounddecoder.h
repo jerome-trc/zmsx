@@ -5,7 +5,7 @@
 
 struct SoundDecoder
 {
-	static SoundDecoder* CreateDecoder(MusicIO::FileInterface* reader);
+	static SoundDecoder* zmsx_create_decoder(MusicIO::FileInterface* reader);
 
     virtual void getInfo(int *samplerate, ChannelConfig *chans, SampleType *type) = 0;
 

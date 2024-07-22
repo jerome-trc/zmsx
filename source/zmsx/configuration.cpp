@@ -128,7 +128,7 @@ void ZMusic_Printf(int type, const char* msg, ...)
 	va_end(ap);
 }
 
-DLL_EXPORT void ZMusic_SetCallbacks(const ZMusicCallbacks* cb)
+DLL_EXPORT void zmsx_set_callbacks(const ZMusicCallbacks* cb)
 {
 	musicCallbacks = *cb;
 	// If not all these are set the sound font interface is not usable.
@@ -136,7 +136,7 @@ DLL_EXPORT void ZMusic_SetCallbacks(const ZMusicCallbacks* cb)
 		musicCallbacks.OpenSoundFont = nullptr;
 }
 
-DLL_EXPORT void ZMusic_SetGenMidi(const uint8_t* data)
+DLL_EXPORT void zmsx_set_genmidi(const uint8_t* data)
 {
 #ifdef HAVE_OPL
 	memcpy(oplConfig.OPLinstruments, data, 175 * 36);
@@ -144,7 +144,7 @@ DLL_EXPORT void ZMusic_SetGenMidi(const uint8_t* data)
 #endif
 }
 
-DLL_EXPORT void ZMusic_SetWgOpn(const void* data, unsigned len)
+DLL_EXPORT void zmsx_set_wgopn(const void* data, unsigned len)
 {
 #ifdef HAVE_OPN
 	opnConfig.default_bank.resize(len);
@@ -152,7 +152,7 @@ DLL_EXPORT void ZMusic_SetWgOpn(const void* data, unsigned len)
 #endif
 }
 
-DLL_EXPORT void ZMusic_SetDmxGus(const void* data, unsigned len)
+DLL_EXPORT void zmsx_set_dmxgus(const void* data, unsigned len)
 {
 #ifdef HAVE_GUS
 	gusConfig.dmxgus.resize(len);
@@ -248,7 +248,7 @@ struct MidiDeviceList
 
 static MidiDeviceList devlist;
 
-DLL_EXPORT const ZMusicMidiOutDevice* ZMusic_GetMidiDevices(int* pAmount)
+DLL_EXPORT const ZMusicMidiOutDevice* zmsx_get_midi_devices(int* pAmount)
 {
 	if (devlist.devices.size() == 0) devlist.Build();
 	if (pAmount) *pAmount = (int)devlist.devices.size();
@@ -325,7 +325,7 @@ static void TimidityPlus_SetReverb()
 //
 //==========================================================================
 
-DLL_EXPORT zmusic_bool ChangeMusicSettingInt(EIntConfigKey key, MusInfo *currSong, int value, int *pRealValue)
+DLL_EXPORT zmusic_bool zmsx_config_set_int(EIntConfigKey key, MusInfo *currSong, int value, int *pRealValue)
 {
 	switch (key)
 	{
@@ -656,7 +656,7 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingInt(EIntConfigKey key, MusInfo *currSon
 	return false;
 }
 
-DLL_EXPORT zmusic_bool ChangeMusicSettingFloat(EFloatConfigKey key, MusInfo* currSong, float value, float *pRealValue)
+DLL_EXPORT zmusic_bool zmsx_config_set_float(EFloatConfigKey key, MusInfo* currSong, float value, float *pRealValue)
 {
 	switch (key)
 	{
@@ -810,7 +810,7 @@ DLL_EXPORT zmusic_bool ChangeMusicSettingFloat(EFloatConfigKey key, MusInfo* cur
 	return false;
 }
 
-DLL_EXPORT zmusic_bool ChangeMusicSettingString(EStringConfigKey key, MusInfo* currSong, const char *value)
+DLL_EXPORT zmusic_bool zmsx_config_set_string(EStringConfigKey key, MusInfo* currSong, const char *value)
 {
 	switch (key)
 	{
@@ -956,7 +956,7 @@ static ZMSXConfigurationSetting config[] = {
 	{}
 };
 
-DLL_EXPORT const ZMSXConfigurationSetting* ZMusic_GetConfiguration()
+DLL_EXPORT const ZMSXConfigurationSetting* zmsx_get_config()
 {
 	return config;
 }

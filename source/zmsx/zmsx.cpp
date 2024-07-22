@@ -149,7 +149,7 @@ static bool ungzip(uint8_t *data, int complen, std::vector<uint8_t> &newdata)
 //
 //==========================================================================
 
-static  MusInfo *ZMusic_OpenSongInternal (MusicIO::FileInterface *reader, EMidiDevice device, const char *Args)
+static  MusInfo *zmsx_open_songInternal (MusicIO::FileInterface *reader, EMidiDevice device, const char *Args)
 {
 	MusInfo *info = nullptr;
 	StreamSource *streamsource = nullptr;
@@ -192,7 +192,7 @@ static  MusInfo *ZMusic_OpenSongInternal (MusicIO::FileInterface *reader, EMidiD
 			}
 		}
 
-		EMIDIType miditype = ZMusic_IdentifyMIDIType(id, sizeof(id));
+		EMIDIType miditype = zmsx_identify_midi_type(id, sizeof(id));
 		if (miditype != MIDI_NOTMIDI)
 		{
 			std::vector<uint8_t> data(reader->filelength());
@@ -202,7 +202,7 @@ static  MusInfo *ZMusic_OpenSongInternal (MusicIO::FileInterface *reader, EMidiD
 				reader->close();
 				return nullptr;
 			}
-			auto source = ZMusic_CreateMIDISource(data.data(), data.size(), miditype);
+			auto source = zmsx_create_midi_source(data.data(), data.size(), miditype);
 			if (source == nullptr)
 			{
 				reader->close();
@@ -298,7 +298,7 @@ static  MusInfo *ZMusic_OpenSongInternal (MusicIO::FileInterface *reader, EMidiD
 	}
 }
 
-DLL_EXPORT ZMusic_MusicStream ZMusic_OpenSongFile(const char* filename, EMidiDevice device, const char* Args)
+DLL_EXPORT ZMusic_MusicStream zmsx_open_song_file(const char* filename, EMidiDevice device, const char* Args)
 {
 	auto f = MusicIO::utf8_fopen(filename, "rb");
 	if (!f)
@@ -308,10 +308,10 @@ DLL_EXPORT ZMusic_MusicStream ZMusic_OpenSongFile(const char* filename, EMidiDev
 	}
 	auto fr = new MusicIO::StdioFileReader;
 	fr->f = f;
-	return ZMusic_OpenSongInternal(fr, device, Args);
+	return zmsx_open_songInternal(fr, device, Args);
 }
 
-DLL_EXPORT ZMusic_MusicStream ZMusic_OpenSongMem(const void* mem, size_t size, EMidiDevice device, const char* Args)
+DLL_EXPORT ZMusic_MusicStream zmsx_open_song_mem(const void* mem, size_t size, EMidiDevice device, const char* Args)
 {
 	if (!mem || !size)
 	{
@@ -320,10 +320,10 @@ DLL_EXPORT ZMusic_MusicStream ZMusic_OpenSongMem(const void* mem, size_t size, E
 	}
 	// Data must be copied because it may be used as a streaming source and we cannot guarantee that the client memory stays valid. We also have no means to free it.
 	auto mr = new MusicIO::VectorReader((uint8_t*)mem, (long)size);
-	return ZMusic_OpenSongInternal(mr, device, Args);
+	return zmsx_open_songInternal(mr, device, Args);
 }
 
-DLL_EXPORT ZMusic_MusicStream ZMusic_OpenSong(ZMusicCustomReader* reader, EMidiDevice device, const char* Args)
+DLL_EXPORT ZMusic_MusicStream zmsx_open_song(ZMusicCustomReader* reader, EMidiDevice device, const char* Args)
 {
 	if (!reader)
 	{
@@ -331,7 +331,7 @@ DLL_EXPORT ZMusic_MusicStream ZMusic_OpenSong(ZMusicCustomReader* reader, EMidiD
 		return nullptr;
 	}
 	auto cr = new CustomFileReader(reader);	// Oh no! We just put another wrapper around the client's wrapper!
-	return ZMusic_OpenSongInternal(cr, device, Args);
+	return zmsx_open_songInternal(cr, device, Args);
 }
 
 //==========================================================================
@@ -340,7 +340,7 @@ DLL_EXPORT ZMusic_MusicStream ZMusic_OpenSong(ZMusicCustomReader* reader, EMidiD
 //
 //==========================================================================
 
-DLL_EXPORT MusInfo *ZMusic_OpenCDSong (int track, int id)
+DLL_EXPORT MusInfo *zmsx_open_song_cd (int track, int id)
 {
 	MusInfo *info = CD_OpenSong (track, id);
 
@@ -360,7 +360,7 @@ DLL_EXPORT MusInfo *ZMusic_OpenCDSong (int track, int id)
 //
 //==========================================================================
 
-DLL_EXPORT zmusic_bool ZMusic_FillStream(MusInfo* song, void* buff, int len)
+DLL_EXPORT zmusic_bool zmsx_fill_stream(MusInfo* song, void* buff, int len)
 {
 	if (song == nullptr) return false;
 	std::lock_guard<FCriticalSection> lock(song->CritSec);
@@ -373,7 +373,7 @@ DLL_EXPORT zmusic_bool ZMusic_FillStream(MusInfo* song, void* buff, int len)
 //
 //==========================================================================
 
-DLL_EXPORT zmusic_bool ZMusic_Start(MusInfo *song, int subsong, zmusic_bool loop)
+DLL_EXPORT zmusic_bool zmsx_start(MusInfo *song, int subsong, zmusic_bool loop)
 {
 	if (!song) return true;	// Starting a null song is not an error! It just won't play anything.
 	try
@@ -394,63 +394,63 @@ DLL_EXPORT zmusic_bool ZMusic_Start(MusInfo *song, int subsong, zmusic_bool loop
 //
 //==========================================================================
 
-DLL_EXPORT void ZMusic_Pause(MusInfo *song)
+DLL_EXPORT void zmsx_pause(MusInfo *song)
 {
 	if (!song) return;
 	song->Pause();
 }
 
-DLL_EXPORT void ZMusic_Resume(MusInfo *song)
+DLL_EXPORT void zmsx_resume(MusInfo *song)
 {
 	if (!song) return;
 	song->Resume();
 }
 
-DLL_EXPORT void ZMusic_Update(MusInfo *song)
+DLL_EXPORT void zmsx_update(MusInfo *song)
 {
 	if (!song) return;
 	song->Update();
 }
 
-DLL_EXPORT zmusic_bool ZMusic_IsPlaying(MusInfo *song)
+DLL_EXPORT zmusic_bool zmsx_is_playing(MusInfo *song)
 {
 	if (!song) return false;
 	return song->IsPlaying();
 }
 
-DLL_EXPORT void ZMusic_Stop(MusInfo *song)
+DLL_EXPORT void zmsx_stop(MusInfo *song)
 {
 	if (!song) return;
 	std::lock_guard<FCriticalSection> lock(song->CritSec);
 	song->Stop();
 }
 
-DLL_EXPORT zmusic_bool ZMusic_SetSubsong(MusInfo *song, int subsong)
+DLL_EXPORT zmusic_bool zmsx_set_subsong(MusInfo *song, int subsong)
 {
 	if (!song) return false;
 	std::lock_guard<FCriticalSection> lock(song->CritSec);
 	return song->SetSubsong(subsong);
 }
 
-DLL_EXPORT zmusic_bool ZMusic_IsLooping(MusInfo *song)
+DLL_EXPORT zmusic_bool zmsx_is_looping(MusInfo *song)
 {
 	if (!song) return false;
 	return song->m_Looping;
 }
 
-DLL_EXPORT int ZMusic_GetDeviceType(MusInfo* song)
+DLL_EXPORT int zmsx_get_device_type(MusInfo* song)
 {
 	if (!song) return false;
 	return song->GetDeviceType();
 }
 
-DLL_EXPORT zmusic_bool ZMusic_IsMIDI(MusInfo *song)
+DLL_EXPORT zmusic_bool zmsx_is_midi(MusInfo *song)
 {
 	if (!song) return false;
 	return song->IsMIDI();
 }
 
-DLL_EXPORT void ZMusic_GetStreamInfo(MusInfo *song, SoundStreamInfo *fmt)
+DLL_EXPORT void zmsx_get_stream_info(MusInfo *song, SoundStreamInfo *fmt)
 {
 	if (!fmt) return;
 	*fmt = {};
@@ -473,7 +473,7 @@ DLL_EXPORT void ZMusic_GetStreamInfo(MusInfo *song, SoundStreamInfo *fmt)
 	}
 }
 
-DLL_EXPORT void ZMusic_GetStreamInfoEx(MusInfo *song, SoundStreamInfoEx *fmt)
+DLL_EXPORT void zmsx_get_stream_info_ex(MusInfo *song, SoundStreamInfoEx *fmt)
 {
 	if (!fmt) return;
 	if (!song) *fmt = {};
@@ -481,13 +481,13 @@ DLL_EXPORT void ZMusic_GetStreamInfoEx(MusInfo *song, SoundStreamInfoEx *fmt)
 	*fmt = song->GetStreamInfoEx();
 }
 
-DLL_EXPORT void ZMusic_Close(MusInfo *song)
+DLL_EXPORT void zmsx_close(MusInfo *song)
 {
 	if (!song) return;
 	delete song;
 }
 
-DLL_EXPORT void ZMusic_VolumeChanged(MusInfo *song)
+DLL_EXPORT void zmsx_volume_changed(MusInfo *song)
 {
 	if (!song) return;
 	std::lock_guard<FCriticalSection> lock(song->CritSec);
@@ -496,7 +496,7 @@ DLL_EXPORT void ZMusic_VolumeChanged(MusInfo *song)
 
 static std::string staticErrorMessage;
 
-DLL_EXPORT const char *ZMusic_GetStats(MusInfo *song)
+DLL_EXPORT const char *zmsx_get_stats(MusInfo *song)
 {
 	if (!song) return "";
 	std::lock_guard<FCriticalSection> lock(song->CritSec);
@@ -509,12 +509,12 @@ void SetError(const char* msg)
 	staticErrorMessage = msg;
 }
 
-DLL_EXPORT const char* ZMusic_GetLastError()
+DLL_EXPORT const char* zmsx_get_last_error()
 {
 	return staticErrorMessage.c_str();
 }
 
-DLL_EXPORT zmusic_bool ZMusic_WriteSMF(MIDISource* source, const char *fn, int looplimit)
+DLL_EXPORT zmusic_bool zmsx_write_smf(MIDISource* source, const char *fn, int looplimit)
 {
 	std::vector<uint8_t> midi;
 	bool success;

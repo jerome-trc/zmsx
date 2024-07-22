@@ -217,34 +217,35 @@ typedef enum EZMusicMessageSeverity_ {
 } EZMusicMessageSeverity;
 
 typedef struct ZMusicCallbacks_ {
-	// Callbacks the client can install to capture messages from the backends
-	// or to provide sound font data.
+	/// Callbacks the client can install to capture messages from the backends
+	/// or to provide sound font data.
 
 	void (*MessageFunc)(int severity, const char* msg);
 	// The message callbacks are optional, without them the output goes to stdout.
 
-	// Retrieves the path to a soundfont identified by an identifier. Only needed if the client virtualizes the sound font names
+	/// Retrieves the path to a soundfont identified by an identifier. Only needed if the client virtualizes the sound font names
 	const char *(*PathForSoundfont)(const char *name, int type);
 
 	// The sound font callbacks are for allowing the client to customize sound font management and they are optional.
 	// They only need to be defined if the client virtualizes the sound font management and doesn't pass real paths to the music code.
 	// Without them only paths to real files can be used. If one of these gets set, all must be set.
 
-	// This opens a sound font. Must return a handle with which the sound font's content can be read.
+	/// This opens a sound font. Must return a handle with which the sound font's content can be read.
 	void *(*OpenSoundFont)(const char* name, int type);
 
-	// Opens a file in the sound font. For GUS patch sets this will try to open each patch with this function.
-	// For other formats only the sound font's actual name can be requested.
-	// When passed NULL this must open the Timidity config file, if this is requested for an SF2 sound font it should be synthesized.
+	/// Opens a file in the sound font. For GUS patch sets this will try to open each patch with this function.
+	/// For other formats only the sound font's actual name can be requested.
+	/// When passed NULL this must open the Timidity config file, if this is requested for an SF2 sound font it should be synthesized.
 	ZMusicCustomReader* (*SF_OpenFile)(void* handle, const char* fn);
 
-	//Adds a path to the list of directories in which files must be looked for.
+	/// Adds a path to the list of directories in which files must be looked for.
 	void (*SF_AddToSearchPath)(void* handle, const char* path);
 
 	// Closes the sound font reader.
 	void (*SF_Close)(void* handle);
 
-	// Used to handle client-specific path macros. If not set, the path may not contain any special tokens that may need expansion.
+	/// Used to handle client-specific path macros.
+	/// If not set, the path may not contain any special tokens that may need expansion.
 	const char *(*NicePath)(const char* path);
 } ZMusicCallbacks;
 
@@ -283,102 +284,198 @@ struct SoundDecoder;
 extern "C" {
 #endif
 
-	DLL_IMPORT const char* ZMusic_GetLastError();
+	DLL_IMPORT const char* zmsx_get_last_error(void);
 
-	// Sets callbacks for functionality that the client needs to provide.
-	DLL_IMPORT void ZMusic_SetCallbacks(const ZMusicCallbacks* callbacks);
-	// Sets GenMidi data for OPL playback. If this isn't provided the OPL synth will not work.
-	DLL_IMPORT void ZMusic_SetGenMidi(const uint8_t* data);
-	// Set default bank for OPN. Without this OPN only works with custom banks.
-	DLL_IMPORT void ZMusic_SetWgOpn(const void* data, unsigned len);
-	// Set DMXGUS data for running the GUS synth in actual GUS mode.
-	DLL_IMPORT void ZMusic_SetDmxGus(const void* data, unsigned len);
+	/// Sets callbacks for functionality that the client needs to provide.
+	DLL_IMPORT void zmsx_set_callbacks(const ZMusicCallbacks* callbacks);
 
-	// Returns an array with all available configuration options - terminated with an empty entry where all elements are 0.
-	DLL_IMPORT const ZMSXConfigurationSetting* ZMusic_GetConfiguration();
+	/// Sets GenMidi data for OPL playback.
+	/// If this isn't provided the OPL synth will not work.
+	DLL_IMPORT void zmsx_set_genmidi(const uint8_t* data);
 
-	// These exports are needed by the MIDI dumpers which need to remain on the client side because the need access to the client's file system.
-	DLL_IMPORT EMIDIType ZMusic_IdentifyMIDIType(uint32_t* id, int size);
-	DLL_IMPORT ZMusic_MidiSource ZMusic_CreateMIDISource(const uint8_t* data, size_t length, EMIDIType miditype);
-	DLL_IMPORT zmusic_bool ZMusic_MIDIDumpWave(ZMusic_MidiSource source, EMidiDevice devtype, const char* devarg, const char* outname, int subsong, int samplerate);
+	/// Set default bank for OPN. Without this OPN only works with custom banks.
+	DLL_IMPORT void zmsx_set_wgopn(const void* data, unsigned len);
 
-	DLL_IMPORT ZMusic_MusicStream ZMusic_OpenSong(ZMusicCustomReader* reader, EMidiDevice device, const char* Args);
-	DLL_IMPORT ZMusic_MusicStream ZMusic_OpenSongFile(const char *filename, EMidiDevice device, const char* Args);
-	DLL_IMPORT ZMusic_MusicStream ZMusic_OpenSongMem(const void *mem, size_t size, EMidiDevice device, const char* Args);
-	DLL_IMPORT ZMusic_MusicStream ZMusic_OpenCDSong(int track, int cdid);
+	/// Set DMXGUS data for running the GUS synth in actual GUS mode.
+	DLL_IMPORT void zmsx_set_dmxgus(const void* data, unsigned len);
 
-	DLL_IMPORT zmusic_bool ZMusic_FillStream(ZMusic_MusicStream stream, void* buff, int len);
-	DLL_IMPORT zmusic_bool ZMusic_Start(ZMusic_MusicStream song, int subsong, zmusic_bool loop);
-	DLL_IMPORT void ZMusic_Pause(ZMusic_MusicStream song);
-	DLL_IMPORT void ZMusic_Resume(ZMusic_MusicStream song);
-	DLL_IMPORT void ZMusic_Update(ZMusic_MusicStream song);
-	DLL_IMPORT zmusic_bool ZMusic_IsPlaying(ZMusic_MusicStream song);
-	DLL_IMPORT void ZMusic_Stop(ZMusic_MusicStream song);
-	DLL_IMPORT void ZMusic_Close(ZMusic_MusicStream song);
-	DLL_IMPORT zmusic_bool ZMusic_SetSubsong(ZMusic_MusicStream song, int subsong);
-	DLL_IMPORT zmusic_bool ZMusic_IsLooping(ZMusic_MusicStream song);
-	DLL_IMPORT int ZMusic_GetDeviceType(ZMusic_MusicStream song);
-	DLL_IMPORT zmusic_bool ZMusic_IsMIDI(ZMusic_MusicStream song);
-	DLL_IMPORT void ZMusic_VolumeChanged(ZMusic_MusicStream song);
-	DLL_IMPORT zmusic_bool ZMusic_WriteSMF(ZMusic_MidiSource source, const char* fn, int looplimit);
-	DLL_IMPORT void ZMusic_GetStreamInfo(ZMusic_MusicStream song, SoundStreamInfo *info);
-	DLL_IMPORT void ZMusic_GetStreamInfoEx(ZMusic_MusicStream song, SoundStreamInfoEx *info);
+	/// Returns an array with all available configuration options,
+	/// terminated with an empty entry where all elements are 0.
+	DLL_IMPORT const ZMSXConfigurationSetting* zmsx_get_config(void);
+
+	/// These exports are needed by the MIDI dumpers which need to remain on the client side
+	/// because they need access to the client's file system.
+	DLL_IMPORT EMIDIType zmsx_identify_midi_type(uint32_t* id, int size);
+
+	DLL_IMPORT ZMusic_MidiSource
+		zmsx_create_midi_source(const uint8_t* data, size_t length, EMIDIType miditype);
+
+	DLL_IMPORT zmusic_bool zmsx_midi_dump_wave(
+		ZMusic_MidiSource source,
+		EMidiDevice devtype,
+		const char* devarg,
+		const char* outname,
+		int subsong,
+		int samplerate
+	);
+
+	DLL_IMPORT ZMusic_MusicStream
+		zmsx_open_song(ZMusicCustomReader* reader, EMidiDevice device, const char* Args);
+
+	DLL_IMPORT ZMusic_MusicStream
+		zmsx_open_song_file(const char* filename, EMidiDevice device, const char* Args);
+
+	DLL_IMPORT ZMusic_MusicStream zmsx_open_song_mem(
+		const void* mem,
+		size_t size,
+		EMidiDevice device,
+		const char* Args
+	);
+
+	DLL_IMPORT ZMusic_MusicStream zmsx_open_song_cd(int track, int cdid);
+
+	DLL_IMPORT zmusic_bool zmsx_fill_stream(ZMusic_MusicStream stream, void* buff, int len);
+
+	DLL_IMPORT zmusic_bool zmsx_start(ZMusic_MusicStream song, int subsong, zmusic_bool loop);
+
+	DLL_IMPORT void zmsx_pause(ZMusic_MusicStream song);
+
+	DLL_IMPORT void zmsx_resume(ZMusic_MusicStream song);
+
+	DLL_IMPORT void zmsx_update(ZMusic_MusicStream song);
+
+	DLL_IMPORT zmusic_bool zmsx_is_playing(ZMusic_MusicStream song);
+
+	DLL_IMPORT void zmsx_stop(ZMusic_MusicStream song);
+
+	DLL_IMPORT void zmsx_close(ZMusic_MusicStream song);
+
+	DLL_IMPORT zmusic_bool zmsx_set_subsong(ZMusic_MusicStream song, int subsong);
+
+	DLL_IMPORT zmusic_bool zmsx_is_looping(ZMusic_MusicStream song);
+
+	DLL_IMPORT int zmsx_get_device_type(ZMusic_MusicStream song);
+
+	DLL_IMPORT zmusic_bool zmsx_is_midi(ZMusic_MusicStream song);
+
+	DLL_IMPORT void zmsx_volume_changed(ZMusic_MusicStream song);
+
+	DLL_IMPORT zmusic_bool
+		zmsx_write_smf(ZMusic_MidiSource source, const char* fn, int looplimit);
+
+	DLL_IMPORT void zmsx_get_stream_info(ZMusic_MusicStream song, SoundStreamInfo* info);
+
+	DLL_IMPORT void zmsx_get_stream_info_ex(
+		ZMusic_MusicStream song,
+		SoundStreamInfoEx* info
+	);
+
 	// Configuration interface. The return value specifies if a music restart is needed.
 	// RealValue should be written back to the CVAR or whatever other method the client uses to store configuration state.
-	DLL_IMPORT zmusic_bool ChangeMusicSettingInt(EIntConfigKey key, ZMusic_MusicStream song, int value, int* pRealValue);
-	DLL_IMPORT zmusic_bool ChangeMusicSettingFloat(EFloatConfigKey key, ZMusic_MusicStream song, float value, float* pRealValue);
-	DLL_IMPORT zmusic_bool ChangeMusicSettingString(EStringConfigKey key, ZMusic_MusicStream song, const char* value);
-	DLL_IMPORT const char *ZMusic_GetStats(ZMusic_MusicStream song);
 
-	DLL_IMPORT struct SoundDecoder* CreateDecoder(const uint8_t* data, size_t size, zmusic_bool isstatic);
-	DLL_IMPORT void SoundDecoder_GetInfo(struct SoundDecoder* decoder, int* samplerate, ChannelConfig* chans, SampleType* type);
-	DLL_IMPORT size_t SoundDecoder_Read(struct SoundDecoder* decoder, void* buffer, size_t length);
-	DLL_IMPORT void SoundDecoder_Close(struct SoundDecoder* decoder);
-	DLL_IMPORT void FindLoopTags(const uint8_t* data, size_t size, uint32_t* start, zmusic_bool* startass, uint32_t* end, zmusic_bool* endass);
+	DLL_IMPORT zmusic_bool zmsx_config_set_int(
+		EIntConfigKey key,
+		ZMusic_MusicStream song,
+		int value,
+		int* pRealValue
+	);
+
+	DLL_IMPORT zmusic_bool zmsx_config_set_float(
+		EFloatConfigKey key,
+		ZMusic_MusicStream song,
+		float value,
+		float* pRealValue
+	);
+
+	DLL_IMPORT zmusic_bool zmsx_config_set_string(
+		EStringConfigKey key,
+		ZMusic_MusicStream song,
+		const char* value
+	);
+
+	DLL_IMPORT const char* zmsx_get_stats(ZMusic_MusicStream song);
+
+	DLL_IMPORT struct SoundDecoder* zmsx_create_decoder(
+		const uint8_t* data,
+		size_t size,
+		zmusic_bool isstatic
+	);
+
+	DLL_IMPORT void zmsx_sounddecoder_get_info(
+		struct SoundDecoder* decoder,
+		int* samplerate,
+		ChannelConfig* chans,
+		SampleType* type
+	);
+
+	DLL_IMPORT size_t
+		zmsx_sounddecoder_read(struct SoundDecoder* decoder, void* buffer, size_t length);
+
+	DLL_IMPORT void zmsx_sounddecoder_close(struct SoundDecoder* decoder);
+
+	DLL_IMPORT void zmsx_find_loop_tags(
+		const uint8_t* data,
+		size_t size,
+		uint32_t* start,
+		zmusic_bool* startass,
+		uint32_t* end,
+		zmusic_bool* endass
+	);
+
 	// The rest of the decoder interface is only useful for streaming music.
 
-	DLL_IMPORT const ZMusicMidiOutDevice *ZMusic_GetMidiDevices(int *pAmount);
-	DLL_IMPORT int ZMusic_GetADLBanks(const char* const** pNames);
+	DLL_IMPORT const ZMusicMidiOutDevice *zmsx_get_midi_devices(int *pAmount);
+
+	DLL_IMPORT int zmsx_get_adl_banks(const char* const** pNames);
 
 	// Direct access to the CD drive.
 	// Stops playing the CD
-	DLL_IMPORT void CD_Stop();
+	DLL_IMPORT void zmsx_cd_stop(void);
 
 	// Pauses CD playing
-	DLL_IMPORT void CD_Pause();
+	DLL_IMPORT void zmsx_cd_pause(void);
 
 	// Resumes CD playback after pausing
-	DLL_IMPORT zmusic_bool CD_Resume();
+	DLL_IMPORT zmusic_bool zmsx_cd_resume(void);
 
 	// Eject the CD tray
-	DLL_IMPORT void CD_Eject();
+	DLL_IMPORT void zmsx_cd_eject(void);
 
 	// Close the CD tray
-	DLL_IMPORT zmusic_bool CD_UnEject();
+	DLL_IMPORT zmusic_bool zmsx_cd_uneject(void);
 
 	// Closes a CD device previously opened with CD_Init
-	DLL_IMPORT void CD_Close();
+	DLL_IMPORT void zmsx_cd_close(void);
 
-	DLL_IMPORT zmusic_bool CD_Enable(const char* drive);
-
+	DLL_IMPORT zmusic_bool zmsx_cd_enable(const char* drive);
 
 #ifdef __cplusplus
 }
 
 inline bool ChangeMusicSetting(
-	EIntConfigKey key, ZMusic_MusicStream song, int value, int* pRealValue = nullptr
+	EIntConfigKey key,
+	ZMusic_MusicStream song,
+	int value,
+	int* pRealValue = nullptr
 ) {
-	return ChangeMusicSettingInt(key, song, value, pRealValue);
+	return zmsx_config_set_int(key, song, value, pRealValue);
 }
 
 inline bool ChangeMusicSetting(
-	EFloatConfigKey key, ZMusic_MusicStream song, float value, float* pRealValue = nullptr
+	EFloatConfigKey key,
+	ZMusic_MusicStream song,
+	float value,
+	float* pRealValue = nullptr
 ) {
-	return ChangeMusicSettingFloat(key, song, value, pRealValue);
+	return zmsx_config_set_float(key, song, value, pRealValue);
 }
 
-inline bool ChangeMusicSetting(EStringConfigKey key, ZMusic_MusicStream song, const char* value) {
-	return ChangeMusicSettingString(key, song, value);
+inline bool ChangeMusicSetting(
+	EStringConfigKey key,
+	ZMusic_MusicStream song,
+	const char* value
+) {
+	return zmsx_config_set_string(key, song, value);
 }
 
 #endif // ifdef __cplusplus
@@ -386,17 +483,27 @@ inline bool ChangeMusicSetting(EStringConfigKey key, ZMusic_MusicStream song, co
 
 // Function typedefs for run-time linking.
 
-typedef const char* (*pfn_ZMusic_GetLastError)();
-typedef void (*pfn_ZMusic_SetCallbacks)(const ZMusicCallbacks* callbacks);
-typedef void (*pfn_ZMusic_SetGenMidi)(const uint8_t* data);
-typedef void (*pfn_ZMusic_SetWgOpn)(const void* data, unsigned len);
-typedef void (*pfn_ZMusic_SetDmxGus)(const void* data, unsigned len);
-typedef const ZMSXConfigurationSetting* (*pfn_ZMusic_GetConfiguration)();
-typedef EMIDIType (*pfn_ZMusic_IdentifyMIDIType)(uint32_t* id, int size);
-typedef ZMusic_MidiSource (*pfn_ZMusic_CreateMIDISource)(
-	const uint8_t* data, size_t length, EMIDIType miditype
+typedef const char* (*pfn_zmsx_get_last_error)(void);
+
+typedef void (*pfn_zmsx_set_callbacks)(const ZMusicCallbacks* callbacks);
+
+typedef void (*pfn_zmsx_set_genmidi)(const uint8_t* data);
+
+typedef void (*pfn_zmsx_set_wgopn)(const void* data, unsigned len);
+
+typedef void (*pfn_zmsx_set_dmxgus)(const void* data, unsigned len);
+
+typedef const ZMSXConfigurationSetting* (*pfn_zmsx_get_config)();
+
+typedef EMIDIType (*pfn_zmsx_identify_midi_type)(uint32_t* id, int size);
+
+typedef ZMusic_MidiSource (*pfn_zmsx_create_midi_source)(
+	const uint8_t* data,
+	size_t length,
+	EMIDIType miditype
 );
-typedef zmusic_bool (*pfn_ZMusic_MIDIDumpWave)(
+
+typedef zmusic_bool (*pfn_zmsx_midi_dump_wave)(
 	ZMusic_MidiSource source,
 	EMidiDevice devtype,
 	const char* devarg,
@@ -404,50 +511,110 @@ typedef zmusic_bool (*pfn_ZMusic_MIDIDumpWave)(
 	int subsong,
 	int samplerate
 );
-typedef ZMusic_MusicStream (*pfn_ZMusic_OpenSong)(
+
+typedef ZMusic_MusicStream (*pfn_zmsx_open_song)(
 	ZMusicCustomReader* reader, EMidiDevice device, const char* Args
 );
-typedef ZMusic_MusicStream (*pfn_ZMusic_OpenSongFile)(
+
+typedef ZMusic_MusicStream (*pfn_zmsx_open_song_file)(
 	const char* filename, EMidiDevice device, const char* Args
 );
-typedef ZMusic_MusicStream (*pfn_ZMusic_OpenSongMem)(
+
+typedef ZMusic_MusicStream (*pfn_zmsx_open_song_mem)(
 	const void* mem, size_t size, EMidiDevice device, const char* Args
 );
-typedef ZMusic_MusicStream (*pfn_ZMusic_OpenCDSong)(int track, int cdid);
-typedef zmusic_bool (*pfn_ZMusic_FillStream)(ZMusic_MusicStream stream, void* buff, int len);
-typedef zmusic_bool (*pfn_ZMusic_Start)(ZMusic_MusicStream song, int subsong, zmusic_bool loop);
-typedef void (*pfn_ZMusic_Pause)(ZMusic_MusicStream song);
-typedef void (*pfn_ZMusic_Resume)(ZMusic_MusicStream song);
-typedef void (*pfn_ZMusic_Update)(ZMusic_MusicStream song);
-typedef zmusic_bool (*pfn_ZMusic_IsPlaying)(ZMusic_MusicStream song);
-typedef void (*pfn_ZMusic_Stop)(ZMusic_MusicStream song);
-typedef void (*pfn_ZMusic_Close)(ZMusic_MusicStream song);
-typedef zmusic_bool (*pfn_ZMusic_SetSubsong)(ZMusic_MusicStream song, int subsong);
-typedef zmusic_bool (*pfn_ZMusic_IsLooping)(ZMusic_MusicStream song);
-typedef zmusic_bool (*pfn_ZMusic_IsMIDI)(ZMusic_MusicStream song);
-typedef void (*pfn_ZMusic_VolumeChanged)(ZMusic_MusicStream song);
-typedef zmusic_bool (*pfn_ZMusic_WriteSMF)(ZMusic_MidiSource source, const char* fn, int looplimit);
-typedef void (*pfn_ZMusic_GetStreamInfo)(ZMusic_MusicStream song, SoundStreamInfo* info);
-typedef void (*pfn_ZMusic_GetStreamInfoEx)(ZMusic_MusicStream song, SoundStreamInfoEx* info);
-typedef zmusic_bool (*pfn_ChangeMusicSettingInt)(
-	EIntConfigKey key, ZMusic_MusicStream song, int value, int* pRealValue
+
+typedef ZMusic_MusicStream (*pfn_zmsx_open_song_cd)(int track, int cdid);
+
+typedef zmusic_bool (*pfn_zmsx_fill_stream)(
+	ZMusic_MusicStream stream,
+	void* buff,
+	int len
 );
-typedef zmusic_bool (*pfn_ChangeMusicSettingFloat)(
-	EFloatConfigKey key, ZMusic_MusicStream song, float value, float* pRealValue
+
+typedef zmusic_bool (*pfn_zmsx_start)(
+	ZMusic_MusicStream song,
+	int subsong,
+	zmusic_bool loop
 );
-typedef zmusic_bool (*pfn_ChangeMusicSettingString)(
-	EStringConfigKey key, ZMusic_MusicStream song, const char* value
+
+typedef void (*pfn_zmsx_pause)(ZMusic_MusicStream song);
+
+typedef void (*pfn_zmsx_resume)(ZMusic_MusicStream song);
+
+typedef void (*pfn_zmsx_update)(ZMusic_MusicStream song);
+
+typedef zmusic_bool (*pfn_zmsx_is_playing)(ZMusic_MusicStream song);
+
+typedef void (*pfn_zmsx_stop)(ZMusic_MusicStream song);
+
+typedef void (*pfn_zmsx_close)(ZMusic_MusicStream song);
+
+typedef zmusic_bool (*pfn_zmsx_set_subsong)(ZMusic_MusicStream song, int subsong);
+
+typedef zmusic_bool (*pfn_zmsx_is_looping)(ZMusic_MusicStream song);
+
+typedef zmusic_bool (*pfn_zmsx_is_midi)(ZMusic_MusicStream song);
+
+typedef void (*pfn_zmsx_volume_changed)(ZMusic_MusicStream song);
+
+typedef zmusic_bool (*pfn_zmsx_write_smf)(
+	ZMusic_MidiSource source,
+	const char* fn,
+	int looplimit
 );
-typedef const char* (*pfn_ZMusic_GetStats)(ZMusic_MusicStream song);
-typedef struct SoundDecoder* (*pfn_CreateDecoder)(
-	const uint8_t* data, size_t size, zmusic_bool isstatic
+
+typedef void (*pfn_zmsx_get_stream_info)(ZMusic_MusicStream song, SoundStreamInfo* info);
+
+typedef void (*pfn_zmsx_get_stream_info_ex)(
+	ZMusic_MusicStream song,
+	SoundStreamInfoEx* info
 );
-typedef void (*pfn_SoundDecoder_GetInfo)(
-	struct SoundDecoder* decoder, int* samplerate, ChannelConfig* chans, SampleType* type
+
+typedef zmusic_bool (*pfn_zmsx_config_set_int)(
+	EIntConfigKey key,
+	ZMusic_MusicStream song,
+	int value,
+	int* pRealValue
 );
-typedef size_t (*pfn_SoundDecoder_Read)(struct SoundDecoder* decoder, void* buffer, size_t length);
-typedef void (*pfn_SoundDecoder_Close)(struct SoundDecoder* decoder);
-typedef void (*pfn_FindLoopTags)(
+
+typedef zmusic_bool (*pfn_zmsx_config_set_float)(
+	EFloatConfigKey key,
+	ZMusic_MusicStream song,
+	float value,
+	float* pRealValue
+);
+
+typedef zmusic_bool (*pfn_zmsx_config_set_string)(
+	EStringConfigKey key,
+	ZMusic_MusicStream song,
+	const char* value
+);
+
+typedef const char* (*pfn_zmsx_get_stats)(ZMusic_MusicStream song);
+
+typedef struct SoundDecoder* (*pfn_zmsx_create_decoder)(
+	const uint8_t* data,
+	size_t size,
+	zmusic_bool isstatic
+);
+
+typedef void (*pfn_zmsx_sounddecoder_get_info)(
+	struct SoundDecoder* decoder,
+	int* samplerate,
+	ChannelConfig* chans,
+	SampleType* type
+);
+
+typedef size_t (*pfn_zmsx_sounddecoder_read)(
+	struct SoundDecoder* decoder,
+	void* buffer,
+	size_t length
+);
+
+typedef void (*pfn_zmsx_sounddecoder_close)(struct SoundDecoder* decoder);
+
+typedef void (*pfn_zmsx_find_loop_tags)(
 	const uint8_t* data,
 	size_t size,
 	uint32_t* start,
@@ -455,6 +622,7 @@ typedef void (*pfn_FindLoopTags)(
 	uint32_t* end,
 	zmusic_bool* endass
 );
-typedef const ZMusicMidiOutDevice* (*pfn_ZMusic_GetMidiDevices)(int* pAmount);
+
+typedef const ZMusicMidiOutDevice* (*pfn_zmsx_get_midi_devices)(int* pAmount);
 
 #endif

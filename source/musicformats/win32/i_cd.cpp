@@ -408,19 +408,13 @@ static void KillThread ()
 	}
 }
 
-//==========================================================================
-//
-// CD_Init
-//
-//==========================================================================
-
-DLL_EXPORT zmusic_bool CD_Enable (const char *cd_drive)
+DLL_EXPORT zmusic_bool zmsx_cd_enable(const char *cd_drive)
 {
 	if (!cd_drive)
 	{
 		// lock the CD system.
 		Enabled = false;
-		CD_Close();
+		zmsx_cd_close();
 		return false;
 	}
 	Enabled = true;	// this must have been called at least once to consider the use of the CD system
@@ -452,7 +446,7 @@ bool CD_Init (int device)
 
 	if (Inited != device)
 	{
-		CD_Close ();
+		zmsx_cd_close ();
 
 		if (CDThread->SendMessage (CDM_Init, device, 0, 0, true))
 		{
@@ -467,13 +461,7 @@ bool CD_Init (int device)
 	return true;
 }
 
-//==========================================================================
-//
-// CD_InitID
-//
-//==========================================================================
-
-bool CD_InitID (unsigned int id, int guess)
+bool CD_InitID(unsigned int id, int guess)
 {
 	char drive;
 
@@ -487,7 +475,7 @@ bool CD_InitID (unsigned int id, int guess)
 		{
 			return true;
 		}
-		CD_Close ();
+		zmsx_cd_close ();
 	}
 
 	for (drive = 'V'; drive < 'Z'; drive++)
@@ -502,19 +490,13 @@ bool CD_InitID (unsigned int id, int guess)
 			{
 				return true;
 			}
-			CD_Close ();
+			zmsx_cd_close ();
 		}
 	}
 	return false;
 }
 
-//==========================================================================
-//
-// CD_Close
-//
-//==========================================================================
-
-DLL_EXPORT void CD_Close ()
+DLL_EXPORT void zmsx_cd_close()
 {
 	if (Inited != NOT_INITED)
 	{
@@ -523,13 +505,7 @@ DLL_EXPORT void CD_Close ()
 	}
 }
 
-//==========================================================================
-//
-// CD_Eject
-//
-//==========================================================================
-
-DLL_EXPORT void CD_Eject ()
+DLL_EXPORT void zmsx_cd_eject()
 {
 	if (Inited != NOT_INITED)
 		CDThread->SendMessage (CDM_Eject, 0, 0, 0, false);
@@ -537,11 +513,11 @@ DLL_EXPORT void CD_Eject ()
 
 //==========================================================================
 //
-// CD_UnEject
+// zmsx_cd_uneject
 //
 //==========================================================================
 
-DLL_EXPORT zmusic_bool CD_UnEject ()
+DLL_EXPORT zmusic_bool zmsx_cd_uneject()
 {
 	if (Inited == NOT_INITED)
 		return false;
@@ -549,25 +525,13 @@ DLL_EXPORT zmusic_bool CD_UnEject ()
 	return CDThread->SendMessage (CDM_UnEject, 0, 0, 0, true) == 0;
 }
 
-//==========================================================================
-//
-// CD_Stop
-//
-//==========================================================================
-
-DLL_EXPORT void CD_Stop ()
+DLL_EXPORT void zmsx_cd_stop()
 {
 	if (Inited != NOT_INITED)
 		CDThread->SendMessage (CDM_Stop, 0, 0, 0, false);
 }
 
-//==========================================================================
-//
-// CD_Play
-//
-//==========================================================================
-
-bool CD_Play (int track, bool looping)
+bool CD_Play(int track, bool looping)
 {
 	if (Inited == NOT_INITED)
 		return false;
@@ -575,25 +539,13 @@ bool CD_Play (int track, bool looping)
 	return CDThread->SendMessage (CDM_Play, track, looping ? 1 : 0, 0, true) == 0;
 }
 
-//==========================================================================
-//
-// CD_PlayNoWait
-//
-//==========================================================================
-
-void CD_PlayNoWait (int track, bool looping)
+void CD_PlayNoWait(int track, bool looping)
 {
 	if (Inited != NOT_INITED)
 		CDThread->SendMessage (CDM_Play, track, looping ? 1 : 0, 0, false);
 }
 
-//==========================================================================
-//
-// CD_PlayCD
-//
-//==========================================================================
-
-bool CD_PlayCD (bool looping)
+bool CD_PlayCD(bool looping)
 {
 	if (Inited == NOT_INITED)
 		return false;
@@ -601,37 +553,19 @@ bool CD_PlayCD (bool looping)
 	return CDThread->SendMessage (CDM_PlayCD, looping ? 1 : 0, 0, 0, true) == 0;
 }
 
-//==========================================================================
-//
-// CD_PlayCDNoWait
-//
-//==========================================================================
-
-void CD_PlayCDNoWait (bool looping)
+void CD_PlayCDNoWait(bool looping)
 {
 	if (Inited != NOT_INITED)
 		CDThread->SendMessage (CDM_PlayCD, looping ? 1 : 0, 0, 0, false);
 }
 
-//==========================================================================
-//
-// CD_Pause
-//
-//==========================================================================
-
-DLL_EXPORT void CD_Pause ()
+DLL_EXPORT void zmsx_cd_pause()
 {
 	if (Inited != NOT_INITED)
 		CDThread->SendMessage (CDM_Pause, 0, 0, 0, false);
 }
 
-//==========================================================================
-//
-// CD_Resume
-//
-//==========================================================================
-
-DLL_EXPORT zmusic_bool CD_Resume ()
+DLL_EXPORT zmusic_bool zmsx_cd_resume()
 {
 	if (Inited == NOT_INITED)
 		return false;
@@ -639,13 +573,7 @@ DLL_EXPORT zmusic_bool CD_Resume ()
 	return CDThread->SendMessage (CDM_Resume, 0, 0, 0, false) == 0;
 }
 
-//==========================================================================
-//
-// CD_GetMode
-//
-//==========================================================================
-
-ECDModes CD_GetMode ()
+ECDModes CD_GetMode()
 {
 	if (Inited == NOT_INITED)
 		return CDMode_Unknown;
@@ -653,13 +581,7 @@ ECDModes CD_GetMode ()
 	return (ECDModes)CDThread->SendMessage (CDM_GetMode, 0, 0, 0, true);
 }
 
-//==========================================================================
-//
-// CD_CheckTrack
-//
-//==========================================================================
-
-bool CD_CheckTrack (int track)
+bool CD_CheckTrack(int track)
 {
 	if (Inited == NOT_INITED)
 		return false;
@@ -669,13 +591,7 @@ bool CD_CheckTrack (int track)
 
 // Functions called only by the helper thread -------------------------------
 
-//==========================================================================
-//
-// IsTrackAudio
-//
-//==========================================================================
-
-bool FCDThread::IsTrackAudio (DWORD track) const
+bool FCDThread::IsTrackAudio(DWORD track) const
 {
 	MCI_STATUS_PARMS statusParms;
 
@@ -689,13 +605,7 @@ bool FCDThread::IsTrackAudio (DWORD track) const
 	return statusParms.dwReturn == MCI_CDA_TRACK_AUDIO;
 }
 
-//==========================================================================
-//
-// GetTrackLength
-//
-//==========================================================================
-
-DWORD FCDThread::GetTrackLength (DWORD track) const
+DWORD FCDThread::GetTrackLength(DWORD track) const
 {
 	MCI_STATUS_PARMS statusParms;
 
@@ -712,13 +622,7 @@ DWORD FCDThread::GetTrackLength (DWORD track) const
 	}
 }
 
-//==========================================================================
-//
-// GetNumTracks
-//
-//==========================================================================
-
-DWORD FCDThread::GetNumTracks () const
+DWORD FCDThread::GetNumTracks() const
 {
 	MCI_STATUS_PARMS statusParms;
 

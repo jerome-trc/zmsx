@@ -304,7 +304,7 @@ MIDIDevice *CreateADLMIDIDevice(const char *Args)
 	return new ADLMIDIDevice(&config);
 }
 
-DLL_EXPORT int ZMusic_GetADLBanks(const char* const** pNames)
+DLL_EXPORT int zmsx_get_adl_banks(const char* const** pNames)
 {
 	if (pNames) *pNames = adl_getBankNames();
 	return adl_getBanksCount();
@@ -316,7 +316,7 @@ MIDIDevice* CreateADLMIDIDevice(const char* Args)
 	throw std::runtime_error("ADL device not supported in this configuration");
 }
 
-DLL_EXPORT int ZMusic_GetADLBanks(const char* const** pNames)
+DLL_EXPORT int zmsx_get_adl_banks(const char* const** pNames)
 {
 	// The export needs to be there even if non-functional.
 	return 0;

@@ -382,7 +382,7 @@ static void FindOggComments(MusicIO::FileInterface *fr, uint32_t *loop_start, zm
 	}
 }
 
-void FindLoopTags(MusicIO::FileInterface *fr, uint32_t *start, zmusic_bool *startass, uint32_t *end, zmusic_bool *endass)
+void zmsx_find_loop_tags(MusicIO::FileInterface *fr, uint32_t *start, zmusic_bool *startass, uint32_t *end, zmusic_bool *endass)
 {
 	uint8_t signature[4];
 
@@ -393,10 +393,10 @@ void FindLoopTags(MusicIO::FileInterface *fr, uint32_t *start, zmusic_bool *star
 		FindOggComments(fr, start, startass, end, endass);
 }
 
-DLL_EXPORT void FindLoopTags(const uint8_t* data, size_t size, uint32_t* start, zmusic_bool* startass, uint32_t* end, zmusic_bool* endass)
+DLL_EXPORT void zmsx_find_loop_tags(const uint8_t* data, size_t size, uint32_t* start, zmusic_bool* startass, uint32_t* end, zmusic_bool* endass)
 {
 	MusicIO::FileInterface* reader = new MusicIO::MemoryReader(data, (long)size);
-	FindLoopTags(reader, start, startass, end, endass);
+	zmsx_find_loop_tags(reader, start, startass, end, endass);
 	reader->close();
 }
 
@@ -412,10 +412,10 @@ StreamSource *SndFile_OpenSong(MusicIO::FileInterface *fr)
 
 	uint32_t loop_start = 0, loop_end = ~0u;
 	zmusic_bool startass = false, endass = false;
-	FindLoopTags(fr, &loop_start, &startass, &loop_end, &endass);
+	zmsx_find_loop_tags(fr, &loop_start, &startass, &loop_end, &endass);
 
 	fr->seek(0, SEEK_SET);
-	auto decoder = SoundDecoder::CreateDecoder(fr);
+	auto decoder = SoundDecoder::zmsx_create_decoder(fr);
 	if (decoder == nullptr) return nullptr;	// If this fails the file reader has not been taken over and the caller needs to clean up. This is to allow further analysis of the passed file.
 	return new SndFileSong(decoder, loop_start, loop_end, startass, endass);
 }

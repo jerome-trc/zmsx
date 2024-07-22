@@ -86,7 +86,7 @@ void CDSong::Pause ()
 {
 	if (m_Status == STATE_Playing)
 	{
-		CD_Pause ();
+		zmsx_cd_pause ();
 		m_Status = STATE_Paused;
 	}
 }
@@ -95,7 +95,7 @@ void CDSong::Resume ()
 {
 	if (m_Status == STATE_Paused)
 	{
-		if (CD_Resume ())
+		if (zmsx_cd_resume ())
 			m_Status = STATE_Playing;
 	}
 }
@@ -105,7 +105,7 @@ void CDSong::Stop ()
 	if (m_Status != STATE_Stopped)
 	{
 		m_Status = STATE_Stopped;
-		CD_Stop ();
+		zmsx_cd_stop ();
 	}
 }
 
@@ -157,7 +157,7 @@ CDDAFile::CDDAFile (MusicIO::FileInterface* reader)
 	uint32_t discid;
 	auto endpos = reader->tell() + reader->filelength() - 8;
 
-	// ZMusic_OpenSong already identified this as a CDDA file, so we
+	// zmsx_open_song already identified this as a CDDA file, so we
 	// just need to check the contents we're interested in.
 	reader->seek(12, SEEK_CUR);
 
