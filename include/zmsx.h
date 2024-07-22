@@ -5,6 +5,12 @@
 #include <stdint.h>
 #include <stdarg.h>
 
+#if __STDC_VERSION__ >= 202000L || (defined(__cplusplus) && __cplusplus >= 201703L)
+#define ZMSX_NODISCARD [[nodiscard]]
+#else
+#define ZMSX_NODISCARD
+#endif
+
 struct SoundDecoder;	// Anonymous to the client.
 
 typedef unsigned char zmusic_bool;
