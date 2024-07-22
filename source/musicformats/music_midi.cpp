@@ -1018,7 +1018,7 @@ MusInfo* CreateMIDIStreamer(MIDISource *source, EMidiDevice devtype, const char*
 	return me;
 }
 
-DLL_EXPORT zmusic_bool zmsx_midi_dump_wave(ZMusic_MidiSource source, EMidiDevice devtype, const char *devarg, const char *outname, int subsong, int samplerate)
+DLL_EXPORT bool zmsx_midi_dump_wave(ZMusic_MidiSource source, EMidiDevice devtype, const char *devarg, const char *outname, int subsong, int samplerate)
 {
 	try
 	{

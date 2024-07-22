@@ -325,7 +325,7 @@ static void TimidityPlus_SetReverb()
 //
 //==========================================================================
 
-DLL_EXPORT zmusic_bool zmsx_config_set_int(EIntConfigKey key, MusInfo *currSong, int value, int *pRealValue)
+DLL_EXPORT bool zmsx_config_set_int(EIntConfigKey key, MusInfo *currSong, int value, int *pRealValue)
 {
 	switch (key)
 	{
@@ -656,7 +656,7 @@ DLL_EXPORT zmusic_bool zmsx_config_set_int(EIntConfigKey key, MusInfo *currSong,
 	return false;
 }
 
-DLL_EXPORT zmusic_bool zmsx_config_set_float(EFloatConfigKey key, MusInfo* currSong, float value, float *pRealValue)
+DLL_EXPORT bool zmsx_config_set_float(EFloatConfigKey key, MusInfo* currSong, float value, float *pRealValue)
 {
 	switch (key)
 	{
@@ -810,7 +810,7 @@ DLL_EXPORT zmusic_bool zmsx_config_set_float(EFloatConfigKey key, MusInfo* currS
 	return false;
 }
 
-DLL_EXPORT zmusic_bool zmsx_config_set_string(EStringConfigKey key, MusInfo* currSong, const char *value)
+DLL_EXPORT bool zmsx_config_set_string(EStringConfigKey key, MusInfo* currSong, const char *value)
 {
 	switch (key)
 	{

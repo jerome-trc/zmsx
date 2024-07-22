@@ -408,7 +408,7 @@ static void KillThread ()
 	}
 }
 
-DLL_EXPORT zmusic_bool zmsx_cd_enable(const char *cd_drive)
+DLL_EXPORT bool zmsx_cd_enable(const char *cd_drive)
 {
 	if (!cd_drive)
 	{
@@ -517,7 +517,7 @@ DLL_EXPORT void zmsx_cd_eject()
 //
 //==========================================================================
 
-DLL_EXPORT zmusic_bool zmsx_cd_uneject()
+DLL_EXPORT bool zmsx_cd_uneject()
 {
 	if (Inited == NOT_INITED)
 		return false;
@@ -565,7 +565,7 @@ DLL_EXPORT void zmsx_cd_pause()
 		CDThread->SendMessage (CDM_Pause, 0, 0, 0, false);
 }
 
-DLL_EXPORT zmusic_bool zmsx_cd_resume()
+DLL_EXPORT bool zmsx_cd_resume()
 {
 	if (Inited == NOT_INITED)
 		return false;

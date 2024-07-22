@@ -96,7 +96,7 @@ protected:
 //
 //==========================================================================
 
-bool S_ParseTimeTag(const char* tag, zmusic_bool* as_samples, unsigned int* time)
+bool S_ParseTimeTag(const char* tag, bool* as_samples, unsigned int* time)
 {
 	const int time_count = 3;
 	const char* bit = tag;
@@ -182,7 +182,7 @@ bool S_ParseTimeTag(const char* tag, zmusic_bool* as_samples, unsigned int* time
 //
 //==========================================================================
 
-static void ParseVorbisComments(MusicIO::FileInterface *fr, uint32_t *start, zmusic_bool *startass, uint32_t *end, zmusic_bool *endass)
+static void ParseVorbisComments(MusicIO::FileInterface *fr, uint32_t *start, bool *startass, uint32_t *end, bool *endass)
 {
 	uint8_t vc_data[4];
 
@@ -202,7 +202,7 @@ static void ParseVorbisComments(MusicIO::FileInterface *fr, uint32_t *start, zmu
 		return;
 	size_t count = vc_data[0] | (vc_data[1]<<8) | (vc_data[2]<<16) | (vc_data[3]<<24);
 
-	zmusic_bool loopass = false;
+	bool loopass = false;
 	uint32_t looplen = 0;
 	bool endfound = false;
 
@@ -272,7 +272,7 @@ static void ParseVorbisComments(MusicIO::FileInterface *fr, uint32_t *start, zmu
 	}
 }
 
-static void FindFlacComments(MusicIO::FileInterface *fr, uint32_t *loop_start, zmusic_bool *startass, uint32_t *loop_end, zmusic_bool *endass)
+static void FindFlacComments(MusicIO::FileInterface *fr, uint32_t *loop_start, bool *startass, uint32_t *loop_end, bool *endass)
 {
 	// Already verified the fLaC marker, so we're 4 bytes into the file
 	bool lastblock = false;
@@ -299,7 +299,7 @@ static void FindFlacComments(MusicIO::FileInterface *fr, uint32_t *loop_start, z
 	}
 }
 
-static void FindOggComments(MusicIO::FileInterface *fr, uint32_t *loop_start, zmusic_bool *startass, uint32_t *loop_end, zmusic_bool *endass)
+static void FindOggComments(MusicIO::FileInterface *fr, uint32_t *loop_start, bool *startass, uint32_t *loop_end, bool *endass)
 {
 	uint8_t ogghead[27];
 
@@ -382,7 +382,7 @@ static void FindOggComments(MusicIO::FileInterface *fr, uint32_t *loop_start, zm
 	}
 }
 
-void zmsx_find_loop_tags(MusicIO::FileInterface *fr, uint32_t *start, zmusic_bool *startass, uint32_t *end, zmusic_bool *endass)
+void zmsx_find_loop_tags(MusicIO::FileInterface *fr, uint32_t *start, bool *startass, uint32_t *end, bool *endass)
 {
 	uint8_t signature[4];
 
@@ -393,7 +393,7 @@ void zmsx_find_loop_tags(MusicIO::FileInterface *fr, uint32_t *start, zmusic_boo
 		FindOggComments(fr, start, startass, end, endass);
 }
 
-DLL_EXPORT void zmsx_find_loop_tags(const uint8_t* data, size_t size, uint32_t* start, zmusic_bool* startass, uint32_t* end, zmusic_bool* endass)
+DLL_EXPORT void zmsx_find_loop_tags(const uint8_t* data, size_t size, uint32_t* start, bool* startass, uint32_t* end, bool* endass)
 {
 	MusicIO::FileInterface* reader = new MusicIO::MemoryReader(data, (long)size);
 	zmsx_find_loop_tags(reader, start, startass, end, endass);
@@ -411,7 +411,7 @@ StreamSource *SndFile_OpenSong(MusicIO::FileInterface *fr)
 	fr->seek(0, SEEK_SET);
 
 	uint32_t loop_start = 0, loop_end = ~0u;
-	zmusic_bool startass = false, endass = false;
+	bool startass = false, endass = false;
 	zmsx_find_loop_tags(fr, &loop_start, &startass, &loop_end, &endass);
 
 	fr->seek(0, SEEK_SET);

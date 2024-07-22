@@ -45,6 +45,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "midisources/midisource.h"
 #include "critsec.h"
 
+static_assert(sizeof(_Bool) == sizeof(bool));
+
 #define GZIP_ID1		31
 #define GZIP_ID2		139
 #define GZIP_CM			8
@@ -360,7 +362,7 @@ DLL_EXPORT MusInfo *zmsx_open_song_cd (int track, int id)
 //
 //==========================================================================
 
-DLL_EXPORT zmusic_bool zmsx_fill_stream(MusInfo* song, void* buff, int len)
+DLL_EXPORT bool zmsx_fill_stream(MusInfo* song, void* buff, int len)
 {
 	if (song == nullptr) return false;
 	std::lock_guard<FCriticalSection> lock(song->CritSec);
@@ -373,7 +375,7 @@ DLL_EXPORT zmusic_bool zmsx_fill_stream(MusInfo* song, void* buff, int len)
 //
 //==========================================================================
 
-DLL_EXPORT zmusic_bool zmsx_start(MusInfo *song, int subsong, zmusic_bool loop)
+DLL_EXPORT bool zmsx_start(MusInfo *song, int subsong, bool loop)
 {
 	if (!song) return true;	// Starting a null song is not an error! It just won't play anything.
 	try
@@ -412,7 +414,7 @@ DLL_EXPORT void zmsx_update(MusInfo *song)
 	song->Update();
 }
 
-DLL_EXPORT zmusic_bool zmsx_is_playing(MusInfo *song)
+DLL_EXPORT bool zmsx_is_playing(MusInfo *song)
 {
 	if (!song) return false;
 	return song->IsPlaying();
@@ -425,14 +427,14 @@ DLL_EXPORT void zmsx_stop(MusInfo *song)
 	song->Stop();
 }
 
-DLL_EXPORT zmusic_bool zmsx_set_subsong(MusInfo *song, int subsong)
+DLL_EXPORT bool zmsx_set_subsong(MusInfo *song, int subsong)
 {
 	if (!song) return false;
 	std::lock_guard<FCriticalSection> lock(song->CritSec);
 	return song->SetSubsong(subsong);
 }
 
-DLL_EXPORT zmusic_bool zmsx_is_looping(MusInfo *song)
+DLL_EXPORT bool zmsx_is_looping(MusInfo *song)
 {
 	if (!song) return false;
 	return song->m_Looping;
@@ -444,7 +446,7 @@ DLL_EXPORT int zmsx_get_device_type(MusInfo* song)
 	return song->GetDeviceType();
 }
 
-DLL_EXPORT zmusic_bool zmsx_is_midi(MusInfo *song)
+DLL_EXPORT bool zmsx_is_midi(MusInfo *song)
 {
 	if (!song) return false;
 	return song->IsMIDI();
@@ -514,7 +516,7 @@ DLL_EXPORT const char* zmsx_get_last_error()
 	return staticErrorMessage.c_str();
 }
 
-DLL_EXPORT zmusic_bool zmsx_write_smf(MIDISource* source, const char *fn, int looplimit)
+DLL_EXPORT bool zmsx_write_smf(MIDISource* source, const char *fn, int looplimit)
 {
 	std::vector<uint8_t> midi;
 	bool success;
