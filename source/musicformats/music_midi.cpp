@@ -68,7 +68,7 @@ enum
 class MIDIStreamer : public MusInfo
 {
 public:
-	MIDIStreamer(EMidiDevice type, const char* args);
+	MIDIStreamer(zmsx_MidiDevice type, const char* args);
 	~MIDIStreamer();
 
 	void MusicVolumeChanged() override;
@@ -88,7 +88,7 @@ public:
 	int ServiceEvent();
 	void SetMIDISource(MIDISource* _source);
 	bool ServiceStream(void* buff, int len) override;
-	SoundStreamInfoEx GetStreamInfoEx() const override;
+	zmsx_SoundStreamInfoEx GetStreamInfoEx() const override;
 
 	int GetDeviceType() const override;
 
@@ -96,7 +96,7 @@ public:
 
 
 protected:
-	MIDIStreamer(const char* dumpname, EMidiDevice type);
+	MIDIStreamer(const char* dumpname, zmsx_MidiDevice type);
 
 	void OutputVolume(uint32_t volume);
 	int FillBuffer(int buffer_num, int max_events, uint32_t max_time);
@@ -111,8 +111,8 @@ protected:
 	//void SetMidiSynth(MIDIDevice *synth);
 
 
-	static EMidiDevice SelectMIDIDevice(EMidiDevice devtype);
-	MIDIDevice* CreateMIDIDevice(EMidiDevice devtype, int samplerate);
+	static zmsx_MidiDevice SelectMIDIDevice(zmsx_MidiDevice devtype);
+	MIDIDevice* Creatzmsx_MidiDevice(zmsx_MidiDevice devtype, int samplerate);
 
 	static void Callback(void* userdata);
 
@@ -133,7 +133,7 @@ protected:
 	bool InitialPlayback;
 	uint32_t NewVolume;
 	uint32_t Volume;
-	EMidiDevice DeviceType;
+	zmsx_MidiDevice DeviceType;
 	bool CallbackIsThreaded;
 	int LoopLimit;
 	std::string Args;
@@ -151,7 +151,7 @@ protected:
 //
 //==========================================================================
 
-MIDIStreamer::MIDIStreamer(EMidiDevice type, const char *args)
+MIDIStreamer::MIDIStreamer(zmsx_MidiDevice type, const char *args)
 :
   DeviceType(type), Args(args)
 {
@@ -202,7 +202,7 @@ bool MIDIStreamer::IsValid() const
 //
 //==========================================================================
 
-EMidiDevice MIDIStreamer::SelectMIDIDevice(EMidiDevice device)
+zmsx_MidiDevice MIDIStreamer::SelectMIDIDevice(zmsx_MidiDevice device)
 {
 	/* MIDI are played as:
 		- OPL:
@@ -245,19 +245,19 @@ EMidiDevice MIDIStreamer::SelectMIDIDevice(EMidiDevice device)
 
 //==========================================================================
 //
-// MIDIStreamer :: CreateMIDIDevice
+// MIDIStreamer :: Creatzmsx_MidiDevice
 //
 //==========================================================================
 
-static EMidiDevice lastRequestedDevice, lastSelectedDevice;
+static zmsx_MidiDevice lastRequestedDevice, lastSelectedDevice;
 
-MIDIDevice *MIDIStreamer::CreateMIDIDevice(EMidiDevice devtype, int samplerate)
+MIDIDevice *MIDIStreamer::Creatzmsx_MidiDevice(zmsx_MidiDevice devtype, int samplerate)
 {
 	bool checked[MDEV_COUNT] = { false };
 
 	MIDIDevice *dev = nullptr;
 	if (devtype == MDEV_SNDSYS) devtype = MDEV_FLUIDSYNTH;
-	EMidiDevice requestedDevice = devtype, selectedDevice;
+	zmsx_MidiDevice requestedDevice = devtype, selectedDevice;
 	while (dev == nullptr)
 	{
 		selectedDevice = devtype;
@@ -362,7 +362,7 @@ MIDIDevice *MIDIStreamer::CreateMIDIDevice(EMidiDevice devtype, int samplerate)
 
 void MIDIStreamer::Play(bool looping, int subsong)
 {
-	EMidiDevice devtype;
+	zmsx_MidiDevice devtype;
 
 	if (source == nullptr) return;	// We have nothing to play so abort.
 
@@ -370,7 +370,7 @@ void MIDIStreamer::Play(bool looping, int subsong)
 	m_Looping = looping;
 	source->SetMIDISubsong(subsong);
 	devtype = SelectMIDIDevice(DeviceType);
-	MIDI.reset(CreateMIDIDevice(devtype, miscConfig.snd_outputrate));
+	MIDI.reset(Creatzmsx_MidiDevice(devtype, miscConfig.snd_outputrate));
 	InitPlayback();
 }
 
@@ -392,7 +392,7 @@ bool MIDIStreamer::DumpWave(const char *filename, int subsong, int samplerate)
 	{
 		throw std::runtime_error("System MIDI device is not supported");
 	}
-	auto iMIDI = CreateMIDIDevice(devtype, samplerate);
+	auto iMIDI = Creatzmsx_MidiDevice(devtype, samplerate);
 	auto writer = new MIDIWaveWriter(filename, static_cast<SoftSynthMIDIDevice*>(iMIDI));
 	MIDI.reset(writer);
 	bool res = InitPlayback();
@@ -447,7 +447,7 @@ bool MIDIStreamer::InitPlayback()
 	}
 }
 
-SoundStreamInfoEx MIDIStreamer::GetStreamInfoEx() const
+zmsx_SoundStreamInfoEx MIDIStreamer::GetStreamInfoEx() const
 {
 	if (MIDI) return MIDI->GetStreamInfoEx();
 	else return {};
@@ -1011,14 +1011,14 @@ bool MIDIStreamer::ServiceStream(void* buff, int len)
 //
 //==========================================================================
 
-MusInfo* CreateMIDIStreamer(MIDISource *source, EMidiDevice devtype, const char* args)
+MusInfo* CreateMIDIStreamer(MIDISource *source, zmsx_MidiDevice devtype, const char* args)
 {
 	auto me = new MIDIStreamer(devtype, args);
 	me->SetMIDISource(source);
 	return me;
 }
 
-DLL_EXPORT bool zmsx_midi_dump_wave(ZMusic_MidiSource source, EMidiDevice devtype, const char *devarg, const char *outname, int subsong, int samplerate)
+DLL_EXPORT bool zmsx_midi_dump_wave(zmsx_MidiSource source, zmsx_MidiDevice devtype, const char *devarg, const char *outname, int subsong, int samplerate)
 {
 	try
 	{

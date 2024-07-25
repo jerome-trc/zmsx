@@ -64,7 +64,7 @@ public:
 	//bool SetPosition(int ms);
 	bool SetSubsong(int subsong) override;
 	bool Start() override;
-	SoundStreamInfoEx GetFormatEx() override;
+	zmsx_SoundStreamInfoEx GetFormatEx() override;
 	void ChangeSettingNum(const char* setting, double val) override;
 	std::string GetStats() override;
 
@@ -1046,7 +1046,7 @@ DumbSong::~DumbSong()
 //
 //==========================================================================
 
-SoundStreamInfoEx DumbSong::GetFormatEx()
+zmsx_SoundStreamInfoEx DumbSong::GetFormatEx()
 {
 	return { 32*1024, srate, SampleType_Float32, ChannelConfig_Stereo };
 }

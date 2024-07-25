@@ -50,7 +50,7 @@ public:
 	SndFileSong(SoundDecoder *decoder, uint32_t loop_start, uint32_t loop_end, bool startass, bool endass);
 	~SndFileSong();
 	std::string GetStats() override;
-	SoundStreamInfoEx GetFormatEx() override;
+	zmsx_SoundStreamInfoEx GetFormatEx() override;
 	bool GetData(void *buffer, size_t len) override;
 
 protected:
@@ -433,8 +433,8 @@ static int32_t Scale(int32_t a, int32_t b, int32_t c)
 
 SndFileSong::SndFileSong(SoundDecoder *decoder, uint32_t loop_start, uint32_t loop_end, bool startass, bool endass)
 {
-	ChannelConfig chanconf;
-	SampleType stype;
+	zmsx_ChannelConfig chanconf;
+	zmsx_SampleType stype;
 	int srate;
 
 	decoder->getInfo(&srate, &chanconf, &stype);
@@ -449,10 +449,10 @@ SndFileSong::SndFileSong(SoundDecoder *decoder, uint32_t loop_start, uint32_t lo
 	FrameSize = ZMusic_ChannelCount(chanconf) * ZMusic_SampleTypeSize(stype);
 }
 
-SoundStreamInfoEx SndFileSong::GetFormatEx()
+zmsx_SoundStreamInfoEx SndFileSong::GetFormatEx()
 {
-	ChannelConfig chanconf;
-	SampleType stype;
+	zmsx_ChannelConfig chanconf;
+	zmsx_SampleType stype;
 	int srate;
 
 	Decoder->getInfo(&srate, &chanconf, &stype);
@@ -483,8 +483,8 @@ std::string SndFileSong::GetStats()
 {
 	char out[80];
 
-	ChannelConfig chanconf;
-	SampleType stype;
+	zmsx_ChannelConfig chanconf;
+	zmsx_SampleType stype;
 	int srate;
 	Decoder->getInfo(&srate, &chanconf, &stype);
 

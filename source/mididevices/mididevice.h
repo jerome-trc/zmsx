@@ -51,7 +51,7 @@ public:
 	virtual std::string GetStats();
 	virtual int GetDeviceType() const { return MDEV_DEFAULT; }
 	virtual bool CanHandleSysex() const { return true; }
-	virtual SoundStreamInfoEx GetStreamInfoEx() const;
+	virtual zmsx_SoundStreamInfoEx GetStreamInfoEx() const;
 
 protected:
 	MidiCallback Callback;
@@ -81,7 +81,7 @@ public:
 	virtual int Open() override;
 	virtual bool ServiceStream(void* buff, int numbytes);
 	int GetSampleRate() const { return SampleRate; }
-	SoundStreamInfoEx GetStreamInfoEx() const override;
+	zmsx_SoundStreamInfoEx GetStreamInfoEx() const override;
 
 protected:
 	double Tempo;

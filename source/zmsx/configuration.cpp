@@ -64,7 +64,7 @@ struct Dummy
 
 
 MiscConfig miscConfig;
-ZMusicCallbacks musicCallbacks;
+zmsx_Callbacks musicCallbacks;
 
 class SoundFontWrapperInterface : public MusicIO::SoundFontReaderInterface
 {
@@ -109,18 +109,19 @@ namespace MusicIO {
 }
 
 
-void ZMusic_Print(int type, const char* msg, va_list args)
+void ZMusic_Print(zmsx_MessageSeverity type, const char* msg, va_list args)
 {
 	static char printbuf[4096];
 	vsnprintf(printbuf, 4096, msg, args);
-	if (musicCallbacks.MessageFunc)
-	{
+
+	if (musicCallbacks.MessageFunc) {
 		musicCallbacks.MessageFunc(type, printbuf);
 	}
+
 	else fputs(printbuf, type >= ZMUSIC_MSG_WARNING ? stderr : stdout);
 }
 
-void ZMusic_Printf(int type, const char* msg, ...)
+void ZMusic_Printf(zmsx_MessageSeverity type, const char* msg, ...)
 {
 	va_list ap;
 	va_start(ap, msg);
@@ -128,7 +129,7 @@ void ZMusic_Printf(int type, const char* msg, ...)
 	va_end(ap);
 }
 
-DLL_EXPORT void zmsx_set_callbacks(const ZMusicCallbacks* cb)
+DLL_EXPORT void zmsx_set_callbacks(const zmsx_Callbacks* cb)
 {
 	musicCallbacks = *cb;
 	// If not all these are set the sound font interface is not usable.
@@ -160,7 +161,7 @@ DLL_EXPORT void zmsx_set_dmxgus(const void* data, unsigned len)
 #endif
 }
 
-int ZMusic_EnumerateMidiDevices()
+int ZMusic_Enumeratzmsx_MidiDevices()
 {
 #ifdef HAVE_SYSTEM_MIDI
 	#ifdef __linux__
@@ -178,7 +179,7 @@ int ZMusic_EnumerateMidiDevices()
 
 struct MidiDeviceList
 {
-	std::vector<ZMusicMidiOutDevice> devices;
+	std::vector<zmsx_MidiOutDevice> devices;
 	~MidiDeviceList()
 	{
 		for (auto& device : devices)
@@ -217,7 +218,7 @@ struct MidiDeviceList
 		auto& dev = sequencer.GetInternalDevices();
 		for (auto& d : dev)
 		{
-			ZMusicMidiOutDevice mdev = { strdup(d.Name.c_str()), d.ID, zmsx_devcls_mapper };	// fixme: Correctly determine the type of the device.
+			zmsx_MidiOutDevice mdev = { strdup(d.Name.c_str()), d.ID, zmsx_devcls_mapper };	// fixme: Correctly determine the type of the device.
 			devices.push_back(mdev);
 		}
 #elif _WIN32
@@ -236,7 +237,7 @@ struct MidiDeviceList
 				WideCharToMultiByte(CP_UTF8, 0, caps.szPname, (int)len, outbuf, size_needed, nullptr, nullptr);
 				outbuf[size_needed] = 0;
 
-				ZMusicMidiOutDevice mdev = { outbuf, int(id), caps.wTechnology };
+				zmsx_MidiOutDevice mdev = { outbuf, int(id), caps.wTechnology };
 				devices.push_back(mdev);
 			}
 		}
@@ -248,7 +249,7 @@ struct MidiDeviceList
 
 static MidiDeviceList devlist;
 
-DLL_EXPORT const ZMusicMidiOutDevice* zmsx_get_midi_devices(int* pAmount)
+DLL_EXPORT const zmsx_MidiOutDevice* zmsx_get_midi_devices(int* pAmount)
 {
 	if (devlist.devices.size() == 0) devlist.Build();
 	if (pAmount) *pAmount = (int)devlist.devices.size();
@@ -325,7 +326,7 @@ static void TimidityPlus_SetReverb()
 //
 //==========================================================================
 
-DLL_EXPORT bool zmsx_config_set_int(EIntConfigKey key, MusInfo *currSong, int value, int *pRealValue)
+DLL_EXPORT bool zmsx_config_set_int(zmsx_IntConfigKey key, MusInfo *currSong, int value, int *pRealValue)
 {
 	switch (key)
 	{
@@ -656,7 +657,7 @@ DLL_EXPORT bool zmsx_config_set_int(EIntConfigKey key, MusInfo *currSong, int va
 	return false;
 }
 
-DLL_EXPORT bool zmsx_config_set_float(EFloatConfigKey key, MusInfo* currSong, float value, float *pRealValue)
+DLL_EXPORT bool zmsx_config_set_float(zmsx_FloatConfigKey key, MusInfo* currSong, float value, float *pRealValue)
 {
 	switch (key)
 	{
@@ -810,7 +811,7 @@ DLL_EXPORT bool zmsx_config_set_float(EFloatConfigKey key, MusInfo* currSong, fl
 	return false;
 }
 
-DLL_EXPORT bool zmsx_config_set_string(EStringConfigKey key, MusInfo* currSong, const char *value)
+DLL_EXPORT bool zmsx_config_set_string(zmsx_StringConfigKey key, MusInfo* currSong, const char *value)
 {
 	switch (key)
 	{
@@ -862,7 +863,7 @@ DLL_EXPORT bool zmsx_config_set_string(EStringConfigKey key, MusInfo* currSong, 
 	return false;
 }
 
-static ZMSXConfigurationSetting config[] = {
+static zmsx_Setting config[] = {
 #ifdef HAVE_ADL
 	{"zmusic_adl_chips_count", zmusic_adl_chips_count, ZMUSIC_VAR_INT, 5},
 	{"zmusic_adl_emulator_id", zmusic_adl_emulator_id, ZMUSIC_VAR_INT, 0},
@@ -956,7 +957,7 @@ static ZMSXConfigurationSetting config[] = {
 	{}
 };
 
-DLL_EXPORT const ZMSXConfigurationSetting* zmsx_get_config()
+DLL_EXPORT const zmsx_Setting* zmsx_get_config()
 {
 	return config;
 }

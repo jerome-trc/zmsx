@@ -59,7 +59,7 @@ public:
 	void ChangeSettingNum(const char *name, double val) override;
 	std::string GetStats() override;
 	bool GetData(void *buffer, size_t len) override;
-	SoundStreamInfoEx GetFormatEx() override;
+	zmsx_SoundStreamInfoEx GetFormatEx() override;
 
 protected:
 	Music_Emu *Emu;
@@ -112,7 +112,7 @@ StreamSource *GME_OpenSong(MusicIO::FileInterface *reader, const char *fmt, int 
 	gme_err_t err;
 	uint8_t *song;
 	Music_Emu *emu;
-	
+
 	type = gme_identify_extension(fmt);
 	if (type == NULL)
 	{
@@ -169,7 +169,7 @@ GMESong::GMESong(Music_Emu *emu, int sample_rate)
 }
 
 
-SoundStreamInfoEx GMESong::GetFormatEx()
+zmsx_SoundStreamInfoEx GMESong::GetFormatEx()
 {
 	return { 32*1024, SampleRate, SampleType_Int16, ChannelConfig_Stereo };
 }
@@ -287,7 +287,7 @@ std::string GMESong::GetStats()
 	if (TrackInfo != NULL)
 	{
 		int time = gme_tell(Emu);
-		snprintf(out, 80, 
+		snprintf(out, 80,
 			"Track: %d  Time: %3d:%02d:%03d  System: %s",
 			CurrTrack,
 			time/60000,

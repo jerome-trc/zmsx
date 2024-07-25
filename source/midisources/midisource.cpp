@@ -418,7 +418,7 @@ extern int MUSHeaderSearch(const uint8_t *head, int len);
 //
 //==========================================================================
 
-DLL_EXPORT EMIDIType zmsx_identify_midi_type(uint32_t *id, int size)
+DLL_EXPORT zmsx_MidiType zmsx_identify_midi_type(uint32_t *id, int size)
 {
 	// Check for MUS format
 	// Tolerate sloppy wads by searching up to 32 bytes for the header
@@ -474,7 +474,7 @@ DLL_EXPORT EMIDIType zmsx_identify_midi_type(uint32_t *id, int size)
 //
 //==========================================================================
 
-DLL_EXPORT ZMusic_MidiSource zmsx_create_midi_source(const uint8_t *data, size_t length, EMIDIType miditype)
+DLL_EXPORT zmsx_MidiSource zmsx_create_midi_source(const uint8_t *data, size_t length, zmsx_MidiType miditype)
 {
 	try
 	{

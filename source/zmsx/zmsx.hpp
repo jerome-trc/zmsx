@@ -12,11 +12,11 @@
 #define DLL_IMPORT
 #endif
 
-typedef class MIDISource *ZMusic_MidiSource;
-typedef class MusInfo *ZMusic_MusicStream;
+typedef class MIDISource *zmsx_MidiSource;
+typedef class MusInfo *zmsx_MusicStream;
 
 // Build two configurations - lite and full.
-// Lite only  uses FluidSynth for MIDI playback and is licensed under the LGPL v2.1
+// Lite only uses FluidSynth for MIDI playback and is licensed under the LGPL v2.1
 // Full uses all MIDI synths and is licensed under the GPL v3.
 
 #ifndef ZMSX_LITE
@@ -35,9 +35,9 @@ void SetError(const char *text);
 
 struct CustomFileReader : public MusicIO::FileInterface
 {
-	ZMusicCustomReader* cr;
+	zmsx_CustomReader* cr;
 
-	CustomFileReader(ZMusicCustomReader* zr) : cr(zr) {}
+	CustomFileReader(zmsx_CustomReader* zr) : cr(zr) {}
 	virtual char* gets(char* buff, int n) { return cr->gets(cr, buff, n); }
 	virtual long read(void* buff, int32_t size) { return cr->read(cr, buff, size); }
 	virtual long seek(long offset, int whence) { return cr->seek(cr, offset, whence); }
@@ -53,7 +53,7 @@ struct CustomFileReader : public MusicIO::FileInterface
 
 void ZMusic_Printf(int type, const char* msg, ...);
 
-inline uint8_t ZMusic_SampleTypeSize(SampleType stype)
+inline uint8_t ZMusic_SampleTypeSize(zmsx_SampleType stype)
 {
     switch(stype)
     {
@@ -64,7 +64,7 @@ inline uint8_t ZMusic_SampleTypeSize(SampleType stype)
     return 0;
 }
 
-inline uint8_t ZMusic_ChannelCount(ChannelConfig chans)
+inline uint8_t ZMusic_ChannelCount(zmsx_ChannelConfig chans)
 {
     switch(chans)
     {
@@ -74,7 +74,7 @@ inline uint8_t ZMusic_ChannelCount(ChannelConfig chans)
     return 0;
 }
 
-inline const char *ZMusic_ChannelConfigName(ChannelConfig chans)
+inline const char *ZMusic_ChannelConfigName(zmsx_ChannelConfig chans)
 {
     switch(chans)
     {

@@ -67,7 +67,7 @@ MusInfo *OpenStreamSong(StreamSource *source);
 const char *GME_CheckFormat(uint32_t header);
 MusInfo* CDDA_OpenSong(MusicIO::FileInterface* reader);
 MusInfo* CD_OpenSong(int track, int id);
-MusInfo* CreateMIDIStreamer(MIDISource *source, EMidiDevice devtype, const char* args);
+MusInfo* CreateMIDIStreamer(MIDISource *source, zmsx_MidiDevice devtype, const char* args);
 
 //==========================================================================
 //
@@ -151,7 +151,7 @@ static bool ungzip(uint8_t *data, int complen, std::vector<uint8_t> &newdata)
 //
 //==========================================================================
 
-static  MusInfo *zmsx_open_songInternal (MusicIO::FileInterface *reader, EMidiDevice device, const char *Args)
+static  MusInfo *zmsx_open_songInternal (MusicIO::FileInterface *reader, zmsx_MidiDevice device, const char *Args)
 {
 	MusInfo *info = nullptr;
 	StreamSource *streamsource = nullptr;
@@ -194,7 +194,7 @@ static  MusInfo *zmsx_open_songInternal (MusicIO::FileInterface *reader, EMidiDe
 			}
 		}
 
-		EMIDIType miditype = zmsx_identify_midi_type(id, sizeof(id));
+		zmsx_MidiType miditype = zmsx_identify_midi_type(id, sizeof(id));
 		if (miditype != MIDI_NOTMIDI)
 		{
 			std::vector<uint8_t> data(reader->filelength());
@@ -300,7 +300,7 @@ static  MusInfo *zmsx_open_songInternal (MusicIO::FileInterface *reader, EMidiDe
 	}
 }
 
-DLL_EXPORT ZMusic_MusicStream zmsx_open_song_file(const char* filename, EMidiDevice device, const char* Args)
+DLL_EXPORT zmsx_MusicStream zmsx_open_song_file(const char* filename, zmsx_MidiDevice device, const char* Args)
 {
 	auto f = MusicIO::utf8_fopen(filename, "rb");
 	if (!f)
@@ -313,7 +313,7 @@ DLL_EXPORT ZMusic_MusicStream zmsx_open_song_file(const char* filename, EMidiDev
 	return zmsx_open_songInternal(fr, device, Args);
 }
 
-DLL_EXPORT ZMusic_MusicStream zmsx_open_song_mem(const void* mem, size_t size, EMidiDevice device, const char* Args)
+DLL_EXPORT zmsx_MusicStream zmsx_open_song_mem(const void* mem, size_t size, zmsx_MidiDevice device, const char* Args)
 {
 	if (!mem || !size)
 	{
@@ -325,7 +325,7 @@ DLL_EXPORT ZMusic_MusicStream zmsx_open_song_mem(const void* mem, size_t size, E
 	return zmsx_open_songInternal(mr, device, Args);
 }
 
-DLL_EXPORT ZMusic_MusicStream zmsx_open_song(ZMusicCustomReader* reader, EMidiDevice device, const char* Args)
+DLL_EXPORT zmsx_MusicStream zmsx_open_song(zmsx_CustomReader* reader, zmsx_MidiDevice device, const char* Args)
 {
 	if (!reader)
 	{
@@ -452,7 +452,7 @@ DLL_EXPORT bool zmsx_is_midi(MusInfo *song)
 	return song->IsMIDI();
 }
 
-DLL_EXPORT void zmsx_get_stream_info(MusInfo *song, SoundStreamInfo *fmt)
+DLL_EXPORT void zmsx_get_stream_info(MusInfo *song, zmsx_SoundStreamInfo *fmt)
 {
 	if (!fmt) return;
 	*fmt = {};
@@ -460,7 +460,7 @@ DLL_EXPORT void zmsx_get_stream_info(MusInfo *song, SoundStreamInfo *fmt)
 	if (!song)
 		return;
 
-	SoundStreamInfoEx fmtex;
+	zmsx_SoundStreamInfoEx fmtex;
 	{
 		std::lock_guard<FCriticalSection> lock(song->CritSec);
 		fmtex = song->GetStreamInfoEx();
@@ -475,7 +475,7 @@ DLL_EXPORT void zmsx_get_stream_info(MusInfo *song, SoundStreamInfo *fmt)
 	}
 }
 
-DLL_EXPORT void zmsx_get_stream_info_ex(MusInfo *song, SoundStreamInfoEx *fmt)
+DLL_EXPORT void zmsx_get_stream_info_ex(MusInfo *song, zmsx_SoundStreamInfoEx *fmt)
 {
 	if (!fmt) return;
 	if (!song) *fmt = {};

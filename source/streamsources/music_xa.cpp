@@ -4,7 +4,7 @@
 
 /**
  * PlayStation XA (ADPCM) source support for MultiVoc
- * Adapted and remixed from superxa2wav 
+ * Adapted and remixed from superxa2wav
  *
  * taken from EDuke32 and adapted for GZDoom by Christoph Oelckers
  */
@@ -235,7 +235,7 @@ class XASong : public StreamSource
 {
 public:
 	XASong(MusicIO::FileInterface *readr);
-	SoundStreamInfoEx GetFormatEx() override;
+	zmsx_SoundStreamInfoEx GetFormatEx() override;
 	bool Start() override;
 	bool GetData(void *buffer, size_t len) override;
 
@@ -260,7 +260,7 @@ XASong::XASong(MusicIO::FileInterface * reader)
 	getNextXABlock(&xad, false);
 }
 
-SoundStreamInfoEx XASong::GetFormatEx()
+zmsx_SoundStreamInfoEx XASong::GetFormatEx()
 {
 	auto SampleRate = xad.blockIs18K? 18900 : 37800;
 	return { 64*1024, SampleRate, SampleType_Float32, ChannelConfig_Stereo };
@@ -303,7 +303,7 @@ bool XASong::GetData(void *vbuff, size_t len)
 			{
 				size_t numsamples = len / 8;
 				size_t availdata = kBufSize - ptr;
-				
+
 				for(size_t tocopy = std::min(numsamples, availdata); tocopy > 0; tocopy--)
 				{
 					float f = *block++;
@@ -336,10 +336,10 @@ bool XASong::GetData(void *vbuff, size_t len)
 			// repeat until done.
 		}
 		else break;
-		
+
 	}
 	return !xad.finished;
-} 
+}
 
 //==========================================================================
 //

@@ -114,7 +114,7 @@ SndFileDecoder::~SndFileDecoder()
 bool SndFileDecoder::open(MusicIO::FileInterface *reader)
 {
 	if (!IsSndFilePresent()) return false;
-	
+
 	SF_VIRTUAL_IO sfio = { file_get_filelen, file_seek, file_read, file_write, file_tell };
 
 	Reader = reader;
@@ -132,7 +132,7 @@ bool SndFileDecoder::open(MusicIO::FileInterface *reader)
 	return false;
 }
 
-void SndFileDecoder::getInfo(int *samplerate, ChannelConfig *chans, SampleType *type)
+void SndFileDecoder::getInfo(int *samplerate, zmsx_ChannelConfig *chans, zmsx_SampleType *type)
 {
     *samplerate = SndInfo.samplerate;
 

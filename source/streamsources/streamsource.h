@@ -21,7 +21,7 @@ public:
 	virtual bool SetPosition(unsigned position) { return false; }
 	virtual bool SetSubsong(int subsong) { return false; }
 	virtual bool GetData(void *buffer, size_t len) = 0;
-	virtual SoundStreamInfoEx GetFormatEx() = 0;
+	virtual zmsx_SoundStreamInfoEx GetFormatEx() = 0;
 	virtual std::string GetStats() { return ""; }
 	virtual void ChangeSettingInt(const char *name, int value) {  }
 	virtual void ChangeSettingNum(const char *name, double value) {  }

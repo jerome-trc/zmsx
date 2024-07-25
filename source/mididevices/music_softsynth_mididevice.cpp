@@ -92,7 +92,7 @@ SoftSynthMIDIDevice::~SoftSynthMIDIDevice()
 //
 //==========================================================================
 
-SoundStreamInfoEx SoftSynthMIDIDevice::GetStreamInfoEx() const
+zmsx_SoundStreamInfoEx SoftSynthMIDIDevice::GetStreamInfoEx() const
 {
 	int chunksize = (SampleRate / StreamBlockSize) * 4;
 	if (!isMono)
