@@ -50,7 +50,6 @@ struct CustomFileReader : public MusicIO::FileInterface
 
 };
 
-
 void ZMusic_Printf(int type, const char* msg, ...);
 
 inline uint8_t ZMusic_SampleTypeSize(zmsx_SampleType stype)

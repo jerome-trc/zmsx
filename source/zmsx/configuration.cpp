@@ -109,19 +109,19 @@ namespace MusicIO {
 }
 
 
-void ZMusic_Print(zmsx_MessageSeverity type, const char* msg, va_list args)
+void ZMusic_Print(int type, const char* msg, va_list args)
 {
 	static char printbuf[4096];
 	vsnprintf(printbuf, 4096, msg, args);
 
 	if (musicCallbacks.MessageFunc) {
-		musicCallbacks.MessageFunc(type, printbuf);
+		musicCallbacks.MessageFunc((zmsx_MessageSeverity)type, printbuf);
 	}
 
 	else fputs(printbuf, type >= ZMUSIC_MSG_WARNING ? stderr : stdout);
 }
 
-void ZMusic_Printf(zmsx_MessageSeverity type, const char* msg, ...)
+void ZMusic_Printf(int type, const char* msg, ...)
 {
 	va_list ap;
 	va_start(ap, msg);
