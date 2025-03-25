@@ -9,11 +9,12 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .root_source_file = b.path("include/zmsx.h"),
     });
+    _ = tc.addModule("zmsx.h");
 
     const lib = b.addLibrary(.{
-        .linkage = .static,
+        .linkage = .dynamic,
         .name = "zmsx",
-        .root_module = tc.addModule("zmsx.h"),
+        .root_module = b.createModule(.{ .optimize = optimize, .target = target }),
     });
     lib.linkLibC();
     lib.linkLibCpp();
@@ -96,17 +97,17 @@ pub fn build(b: *std.Build) void {
     });
     lib.linkSystemLibrary2("sndfile", .{
         .needed = true,
-        .preferred_link_mode = .static,
+        .preferred_link_mode = .dynamic,
         .use_pkg_config = .yes,
     });
     lib.linkSystemLibrary2("ogg", .{
         .needed = true,
-        .preferred_link_mode = .static,
+        .preferred_link_mode = .dynamic,
         .use_pkg_config = .yes,
     });
     lib.linkSystemLibrary2("opus", .{
         .needed = true,
-        .preferred_link_mode = .static,
+        .preferred_link_mode = .dynamic,
         .use_pkg_config = .yes,
     });
     lib.linkSystemLibrary2("vorbis", .{
