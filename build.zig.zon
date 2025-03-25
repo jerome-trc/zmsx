@@ -1,5 +1,6 @@
 .{
-    .name = "zmsx",
+    .name = .zmsx,
+    .fingerprint = 0x3f0514ac03998527,
     .version = "0.0.0",
     .minimum_zig_version = "0.14.0",
     .dependencies = .{},
