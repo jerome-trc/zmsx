@@ -306,7 +306,7 @@ extern "C" {
 
 	/// These exports are needed by the MIDI dumpers which need to remain on the client side
 	/// because they need access to the client's file system.
-	DLL_IMPORT ZMSXMidiType zmsx_identify_midi_type(uint32_t* id, int size);
+	DLL_IMPORT ZMSXMidiType zmsx_identify_midi_type(const uint32_t* id, int size);
 
 	DLL_IMPORT ZMSXMidiSource*
 		zmsx_create_midi_source(const uint8_t* data, size_t length, ZMSXMidiType miditype);
