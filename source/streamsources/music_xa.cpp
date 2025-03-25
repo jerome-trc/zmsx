@@ -235,7 +235,7 @@ class XASong : public StreamSource
 {
 public:
 	XASong(MusicIO::FileInterface *readr);
-	zmsx_SoundStreamInfoEx GetFormatEx() override;
+	ZMSXSoundStreamInfoEx GetFormatEx() override;
 	bool Start() override;
 	bool GetData(void *buffer, size_t len) override;
 
@@ -260,10 +260,10 @@ XASong::XASong(MusicIO::FileInterface * reader)
 	getNextXABlock(&xad, false);
 }
 
-zmsx_SoundStreamInfoEx XASong::GetFormatEx()
+ZMSXSoundStreamInfoEx XASong::GetFormatEx()
 {
 	auto SampleRate = xad.blockIs18K? 18900 : 37800;
-	return { 64*1024, SampleRate, SampleType_Float32, ChannelConfig_Stereo };
+	return { 64*1024, SampleRate, zmsx_sample_float32, zmsx_chancfg_stereo };
 }
 
 //==========================================================================

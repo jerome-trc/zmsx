@@ -24,14 +24,14 @@ public:
 	virtual bool SetPosition(unsigned int ms) { return false;  }
 	virtual bool SetSubsong (int subsong) { return false; }
 	virtual void Update() {}
-	virtual int GetDeviceType() const { return MDEV_DEFAULT; }	// MDEV_DEFAULT stands in for anything that cannot change playback parameters which needs a restart.
+	virtual int GetDeviceType() const { return zmsx_mdev_default; }	// zmsx_mdev_default stands in for anything that cannot change playback parameters which needs a restart.
 	virtual std::string GetStats() { return "No stats available for this song"; }
 	virtual MusInfo* GetWaveDumper(const char* filename, int rate) { return nullptr;  }
 	virtual void ChangeSettingInt(const char* setting, int value) {}			// FluidSynth settings
 	virtual void ChangeSettingNum(const char* setting, double value) {}		// "
 	virtual void ChangeSettingString(const char* setting, const char* value) {}	// "
 	virtual bool ServiceStream(void *buff, int len) { return false;  }
-	virtual zmsx_SoundStreamInfoEx GetStreamInfoEx() const = 0;
+	virtual ZMSXSoundStreamInfoEx GetStreamInfoEx() const = 0;
 
 	enum EState
 	{

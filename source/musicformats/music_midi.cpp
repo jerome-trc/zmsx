@@ -68,7 +68,7 @@ enum
 class MIDIStreamer : public MusInfo
 {
 public:
-	MIDIStreamer(zmsx_MidiDevice type, const char* args);
+	MIDIStreamer(ZMSXMidiDevice type, const char* args);
 	~MIDIStreamer();
 
 	void MusicVolumeChanged() override;
@@ -88,7 +88,7 @@ public:
 	int ServiceEvent();
 	void SetMIDISource(MIDISource* _source);
 	bool ServiceStream(void* buff, int len) override;
-	zmsx_SoundStreamInfoEx GetStreamInfoEx() const override;
+	ZMSXSoundStreamInfoEx GetStreamInfoEx() const override;
 
 	int GetDeviceType() const override;
 
@@ -96,7 +96,7 @@ public:
 
 
 protected:
-	MIDIStreamer(const char* dumpname, zmsx_MidiDevice type);
+	MIDIStreamer(const char* dumpname, ZMSXMidiDevice type);
 
 	void OutputVolume(uint32_t volume);
 	int FillBuffer(int buffer_num, int max_events, uint32_t max_time);
@@ -111,8 +111,8 @@ protected:
 	//void SetMidiSynth(MIDIDevice *synth);
 
 
-	static zmsx_MidiDevice SelectMIDIDevice(zmsx_MidiDevice devtype);
-	MIDIDevice* Creatzmsx_MidiDevice(zmsx_MidiDevice devtype, int samplerate);
+	static ZMSXMidiDevice SelectMIDIDevice(ZMSXMidiDevice devtype);
+	MIDIDevice* CreatZMSXMidiDevice(ZMSXMidiDevice devtype, int samplerate);
 
 	static void Callback(void* userdata);
 
@@ -133,7 +133,7 @@ protected:
 	bool InitialPlayback;
 	uint32_t NewVolume;
 	uint32_t Volume;
-	zmsx_MidiDevice DeviceType;
+	ZMSXMidiDevice DeviceType;
 	bool CallbackIsThreaded;
 	int LoopLimit;
 	std::string Args;
@@ -151,7 +151,7 @@ protected:
 //
 //==========================================================================
 
-MIDIStreamer::MIDIStreamer(zmsx_MidiDevice type, const char *args)
+MIDIStreamer::MIDIStreamer(ZMSXMidiDevice type, const char *args)
 :
   DeviceType(type), Args(args)
 {
@@ -202,7 +202,7 @@ bool MIDIStreamer::IsValid() const
 //
 //==========================================================================
 
-zmsx_MidiDevice MIDIStreamer::SelectMIDIDevice(zmsx_MidiDevice device)
+ZMSXMidiDevice MIDIStreamer::SelectMIDIDevice(ZMSXMidiDevice device)
 {
 	/* MIDI are played as:
 		- OPL:
@@ -220,44 +220,44 @@ zmsx_MidiDevice MIDIStreamer::SelectMIDIDevice(zmsx_MidiDevice device)
 	*/
 
 	// Choose the type of MIDI device we want.
-	if (device != MDEV_DEFAULT)
+	if (device != zmsx_mdev_default)
 	{
 		return device;
 	}
 	switch (miscConfig.snd_mididevice)
 	{
-	case -1:		return MDEV_SNDSYS;
-	case -2:		return MDEV_TIMIDITY;
-	case -3:		return MDEV_OPL;
-	case -4:		return MDEV_GUS;
-	case -5:		return MDEV_FLUIDSYNTH;
-	case -6:		return MDEV_WILDMIDI;
-	case -7:		return MDEV_ADL;
-	case -8:		return MDEV_OPN;
+	case -1:		return zmsx_mdev_sndsys;
+	case -2:		return zmsx_mdev_timidity;
+	case -3:		return zmsx_mdev_opl;
+	case -4:		return zmsx_mdev_gus;
+	case -5:		return zmsx_mdev_fluidsynth;
+	case -6:		return zmsx_mdev_wildmidi;
+	case -7:		return zmsx_mdev_adl;
+	case -8:		return zmsx_mdev_opn;
 	default:
 		#ifdef HAVE_SYSTEM_MIDI
-					return MDEV_STANDARD;
+					return zmsx_mdev_standard;
 		#else
-					return MDEV_SNDSYS;
+					return zmsx_mdev_sndsys;
 		#endif
 	}
 }
 
 //==========================================================================
 //
-// MIDIStreamer :: Creatzmsx_MidiDevice
+// MIDIStreamer :: CreatZMSXMidiDevice
 //
 //==========================================================================
 
-static zmsx_MidiDevice lastRequestedDevice, lastSelectedDevice;
+static ZMSXMidiDevice lastRequestedDevice, lastSelectedDevice;
 
-MIDIDevice *MIDIStreamer::Creatzmsx_MidiDevice(zmsx_MidiDevice devtype, int samplerate)
+MIDIDevice *MIDIStreamer::CreatZMSXMidiDevice(ZMSXMidiDevice devtype, int samplerate)
 {
-	bool checked[MDEV_COUNT] = { false };
+	bool checked[_zmsx_mdev_count_] = { false };
 
 	MIDIDevice *dev = nullptr;
-	if (devtype == MDEV_SNDSYS) devtype = MDEV_FLUIDSYNTH;
-	zmsx_MidiDevice requestedDevice = devtype, selectedDevice;
+	if (devtype == zmsx_mdev_sndsys) devtype = zmsx_mdev_fluidsynth;
+	ZMSXMidiDevice requestedDevice = devtype, selectedDevice;
 	while (dev == nullptr)
 	{
 		selectedDevice = devtype;
@@ -265,19 +265,19 @@ MIDIDevice *MIDIStreamer::Creatzmsx_MidiDevice(zmsx_MidiDevice devtype, int samp
 		{
 			switch (devtype)
 			{
-			case MDEV_GUS:
+			case zmsx_mdev_gus:
 				dev = CreateTimidityMIDIDevice(Args.c_str(), samplerate);
 				break;
 
-			case MDEV_ADL:
+			case zmsx_mdev_adl:
 				dev = CreateADLMIDIDevice(Args.c_str());
 				break;
 
-			case MDEV_OPN:
+			case zmsx_mdev_opn:
 				dev = CreateOPNMIDIDevice(Args.c_str());
 				break;
 
-			case MDEV_STANDARD:
+			case zmsx_mdev_standard:
 
 #ifdef HAVE_SYSTEM_MIDI
 #ifdef _WIN32
@@ -289,19 +289,19 @@ MIDIDevice *MIDIStreamer::Creatzmsx_MidiDevice(zmsx_MidiDevice devtype, int samp
 #endif
 				// Intentional fall-through for systems without standard midi support
 
-			case MDEV_FLUIDSYNTH:
+			case zmsx_mdev_fluidsynth:
 				dev = CreateFluidSynthMIDIDevice(samplerate, Args.c_str());
 				break;
 
-			case MDEV_OPL:
+			case zmsx_mdev_opl:
 				dev = CreateOplMIDIDevice(Args.c_str());
 				break;
 
-			case MDEV_TIMIDITY:
+			case zmsx_mdev_timidity:
 				dev = CreateTimidityPPMIDIDevice(Args.c_str(), samplerate);
 				break;
 
-			case MDEV_WILDMIDI:
+			case zmsx_mdev_wildmidi:
 				dev = CreateWildMIDIDevice(Args.c_str(), samplerate);
 				break;
 
@@ -313,20 +313,20 @@ MIDIDevice *MIDIStreamer::Creatzmsx_MidiDevice(zmsx_MidiDevice devtype, int samp
 		{
 			//DPrintf(DMSG_WARNING, "%s\n", err.what());
 			checked[devtype] = true;
-			devtype = MDEV_DEFAULT;
+			devtype = zmsx_mdev_default;
 			// Opening the requested device did not work out so choose another one.
-			if (!checked[MDEV_FLUIDSYNTH]) devtype = MDEV_FLUIDSYNTH;
-			else if (!checked[MDEV_TIMIDITY]) devtype = MDEV_TIMIDITY;
-			else if (!checked[MDEV_WILDMIDI]) devtype = MDEV_WILDMIDI;
-			else if (!checked[MDEV_GUS]) devtype = MDEV_GUS;
+			if (!checked[zmsx_mdev_fluidsynth]) devtype = zmsx_mdev_fluidsynth;
+			else if (!checked[zmsx_mdev_timidity]) devtype = zmsx_mdev_timidity;
+			else if (!checked[zmsx_mdev_wildmidi]) devtype = zmsx_mdev_wildmidi;
+			else if (!checked[zmsx_mdev_gus]) devtype = zmsx_mdev_gus;
 #ifdef HAVE_SYSTEM_MIDI
-			else if (!checked[MDEV_STANDARD]) devtype = MDEV_STANDARD;
+			else if (!checked[zmsx_mdev_standard]) devtype = zmsx_mdev_standard;
 #endif
-			else if (!checked[MDEV_ADL]) devtype = MDEV_ADL;
-			else if (!checked[MDEV_OPN]) devtype = MDEV_OPN;
-			else if (!checked[MDEV_OPL]) devtype = MDEV_OPL;
+			else if (!checked[zmsx_mdev_adl]) devtype = zmsx_mdev_adl;
+			else if (!checked[zmsx_mdev_opn]) devtype = zmsx_mdev_opn;
+			else if (!checked[zmsx_mdev_opl]) devtype = zmsx_mdev_opl;
 
-			if (devtype == MDEV_DEFAULT)
+			if (devtype == zmsx_mdev_default)
 			{
 				std::string message = std::string(err.what()) + "\n\nFailed to play music: Unable to open any MIDI Device.";
 				throw std::runtime_error(message);
@@ -349,7 +349,7 @@ MIDIDevice *MIDIStreamer::Creatzmsx_MidiDevice(zmsx_MidiDevice devtype, int samp
 
 		lastRequestedDevice = requestedDevice;
 		lastSelectedDevice = selectedDevice;
-		ZMusic_Printf(ZMUSIC_MSG_ERROR, "Unable to create %s MIDI device. Falling back to %s\n", devnames[requestedDevice], devnames[selectedDevice]);
+		ZMusic_Printf(zmsx_msg_error, "Unable to create %s MIDI device. Falling back to %s\n", devnames[requestedDevice], devnames[selectedDevice]);
 	}
 	return dev;
 }
@@ -362,7 +362,7 @@ MIDIDevice *MIDIStreamer::Creatzmsx_MidiDevice(zmsx_MidiDevice devtype, int samp
 
 void MIDIStreamer::Play(bool looping, int subsong)
 {
-	zmsx_MidiDevice devtype;
+	ZMSXMidiDevice devtype;
 
 	if (source == nullptr) return;	// We have nothing to play so abort.
 
@@ -370,7 +370,7 @@ void MIDIStreamer::Play(bool looping, int subsong)
 	m_Looping = looping;
 	source->SetMIDISubsong(subsong);
 	devtype = SelectMIDIDevice(DeviceType);
-	MIDI.reset(Creatzmsx_MidiDevice(devtype, miscConfig.snd_outputrate));
+	MIDI.reset(CreatZMSXMidiDevice(devtype, miscConfig.snd_outputrate));
 	InitPlayback();
 }
 
@@ -388,11 +388,11 @@ bool MIDIStreamer::DumpWave(const char *filename, int subsong, int samplerate)
 
 	assert(MIDI == NULL);
 	auto devtype = SelectMIDIDevice(DeviceType);
-	if (devtype == MDEV_STANDARD)
+	if (devtype == zmsx_mdev_standard)
 	{
 		throw std::runtime_error("System MIDI device is not supported");
 	}
-	auto iMIDI = Creatzmsx_MidiDevice(devtype, samplerate);
+	auto iMIDI = CreatZMSXMidiDevice(devtype, samplerate);
 	auto writer = new MIDIWaveWriter(filename, static_cast<SoftSynthMIDIDevice*>(iMIDI));
 	MIDI.reset(writer);
 	bool res = InitPlayback();
@@ -447,7 +447,7 @@ bool MIDIStreamer::InitPlayback()
 	}
 }
 
-zmsx_SoundStreamInfoEx MIDIStreamer::GetStreamInfoEx() const
+ZMSXSoundStreamInfoEx MIDIStreamer::GetStreamInfoEx() const
 {
 	if (MIDI) return MIDI->GetStreamInfoEx();
 	else return {};
@@ -1011,14 +1011,14 @@ bool MIDIStreamer::ServiceStream(void* buff, int len)
 //
 //==========================================================================
 
-MusInfo* CreateMIDIStreamer(MIDISource *source, zmsx_MidiDevice devtype, const char* args)
+MusInfo* CreateMIDIStreamer(MIDISource *source, ZMSXMidiDevice devtype, const char* args)
 {
 	auto me = new MIDIStreamer(devtype, args);
 	me->SetMIDISource(source);
 	return me;
 }
 
-DLL_EXPORT bool zmsx_midi_dump_wave(zmsx_MidiSource source, zmsx_MidiDevice devtype, const char *devarg, const char *outname, int subsong, int samplerate)
+DLL_EXPORT bool zmsx_midi_dump_wave(ZMSXMidiSource* source, ZMSXMidiDevice devtype, const char *devarg, const char *outname, int subsong, int samplerate)
 {
 	try
 	{

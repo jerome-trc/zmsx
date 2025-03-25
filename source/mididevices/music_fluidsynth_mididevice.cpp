@@ -60,7 +60,7 @@ public:
 	void ChangeSettingInt(const char *setting, int value) override;
 	void ChangeSettingNum(const char *setting, double value) override;
 	void ChangeSettingString(const char *setting, const char *value) override;
-	int GetDeviceType() const override { return MDEV_FLUIDSYNTH; }
+	int GetDeviceType() const override { return zmsx_mdev_fluidsynth; }
 
 protected:
 	void HandleEvent(int status, int parm1, int parm2) override;
@@ -271,12 +271,12 @@ int FluidSynthMIDIDevice::LoadPatchSets(const std::vector<std::string> &config)
 	{
 		if (FLUID_FAILED != fluid_synth_sfload(FluidSynth, file.c_str(), count == 0))
 		{
-			ZMusic_Printf(ZMUSIC_MSG_DEBUG, "Loaded patch set %s.\n", file.c_str());
+			ZMusic_Printf(zmsx_msg_debug, "Loaded patch set %s.\n", file.c_str());
 			count++;
 		}
 		else
 		{
-			ZMusic_Printf(ZMUSIC_MSG_ERROR, "Failed to load patch set %s.\n", file.c_str());
+			ZMusic_Printf(zmsx_msg_error, "Failed to load patch set %s.\n", file.c_str());
 		}
 	}
 	return count;
@@ -302,19 +302,19 @@ void FluidSynthMIDIDevice::ChangeSettingInt(const char *setting, int value)
 	{
 		if (FLUID_OK != fluid_synth_set_interp_method(FluidSynth, -1, value))
 		{
-			ZMusic_Printf(ZMUSIC_MSG_ERROR, "Setting interpolation method %d failed.\n", value);
+			ZMusic_Printf(zmsx_msg_error, "Setting interpolation method %d failed.\n", value);
 		}
 	}
 	else if (strcmp(setting, "synth.polyphony") == 0)
 	{
 		if (FLUID_OK != fluid_synth_set_polyphony(FluidSynth, value))
 		{
-			ZMusic_Printf(ZMUSIC_MSG_ERROR, "Setting polyphony to %d failed.\n", value);
+			ZMusic_Printf(zmsx_msg_error, "Setting polyphony to %d failed.\n", value);
 		}
 	}
 	else if (FluidSettingsResultFailed == fluid_settings_setint(FluidSettings, setting, value))
 	{
-		ZMusic_Printf(ZMUSIC_MSG_ERROR, "Failed to set %s to %d.\n", setting, value);
+		ZMusic_Printf(zmsx_msg_error, "Failed to set %s to %d.\n", setting, value);
 	}
 	// fluid_settings_setint succeeded; update these settings in the running synth, too
 	else if (strcmp(setting, "synth.reverb.active") == 0)
@@ -353,7 +353,7 @@ void FluidSynthMIDIDevice::ChangeSettingNum(const char *setting, double value)
 	}
 	else if (FluidSettingsResultFailed == fluid_settings_setnum(FluidSettings, setting, value))
 	{
-		ZMusic_Printf(ZMUSIC_MSG_ERROR, "Failed to set %s to %g.\n", setting, value);
+		ZMusic_Printf(zmsx_msg_error, "Failed to set %s to %g.\n", setting, value);
 	}
 
 }
@@ -376,7 +376,7 @@ void FluidSynthMIDIDevice::ChangeSettingString(const char *setting, const char *
 
 	if (FluidSettingsResultFailed == fluid_settings_setstr(FluidSettings, setting, value))
 	{
-		ZMusic_Printf(ZMUSIC_MSG_ERROR, "Failed to set %s to %s.\n", setting, value);
+		ZMusic_Printf(zmsx_msg_error, "Failed to set %s to %s.\n", setting, value);
 	}
 }
 
@@ -424,9 +424,9 @@ void Fluid_SetupConfig(const char* patches, std::vector<std::string> &patch_path
 
 	//Resolve the paths here, the renderer will only get a final list of file names.
 
-	if (musicCallbacks.PathForSoundfont)
+	if (musicCallbacks.path_for_soundfont)
 	{
-		auto info = musicCallbacks.PathForSoundfont(patches, SF_SF2);
+		auto info = musicCallbacks.path_for_soundfont(patches, zmsx_sf_sf2);
 		if (info) patches = info;
 	}
 
@@ -458,8 +458,8 @@ void Fluid_SetupConfig(const char* patches, std::vector<std::string> &patch_path
 			{
 				path = tok;
 			}
-			if (musicCallbacks.NicePath)
-				path = musicCallbacks.NicePath(path.c_str());
+			if (musicCallbacks.canonicalize)
+				path = musicCallbacks.canonicalize(path.c_str());
 
 			if (MusicIO::fileExists(path.c_str()))
 			{
@@ -467,7 +467,7 @@ void Fluid_SetupConfig(const char* patches, std::vector<std::string> &patch_path
 			}
 			else
 			{
-				ZMusic_Printf(ZMUSIC_MSG_ERROR, "Could not find patch set %s.\n", tok);
+				ZMusic_Printf(zmsx_msg_error, "Could not find patch set %s.\n", tok);
 			}
 			tok = strtok(NULL, delim);
 		}

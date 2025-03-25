@@ -56,7 +56,7 @@ public:
 	~OPLMUSSong ();
 	bool Start() override;
 	void ChangeSettingInt(const char *name, int value) override;
-	zmsx_SoundStreamInfoEx GetFormatEx() override;
+	ZMSXSoundStreamInfoEx GetFormatEx() override;
 
 protected:
 	bool GetData(void *buffer, size_t len) override;
@@ -95,11 +95,11 @@ OPLMUSSong::OPLMUSSong(MusicIO::FileInterface* reader, OPLConfig* config)
 //
 //==========================================================================
 
-zmsx_SoundStreamInfoEx OPLMUSSong::GetFormatEx()
+ZMSXSoundStreamInfoEx OPLMUSSong::GetFormatEx()
 {
 	int samples = int(OPL_SAMPLE_RATE / 14);
-	return { samples * 4, int(OPL_SAMPLE_RATE), SampleType_Float32,
-		current_opl_core == 0? ChannelConfig_Mono:ChannelConfig_Stereo };
+	return { samples * 4, int(OPL_SAMPLE_RATE), zmsx_sample_float32,
+		current_opl_core == 0? zmsx_chancfg_mono:zmsx_chancfg_stereo };
 }
 
 //==========================================================================

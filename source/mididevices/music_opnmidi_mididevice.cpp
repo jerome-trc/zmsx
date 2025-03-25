@@ -52,7 +52,7 @@ public:
 
 
 	int OpenRenderer() override;
-	int GetDeviceType() const override { return MDEV_OPN; }
+	int GetDeviceType() const override { return zmsx_mdev_opn; }
 
 protected:
 	void HandleEvent(int status, int parm1, int parm2) override;
@@ -246,9 +246,9 @@ MIDIDevice *CreateOPNMIDIDevice(const char *Args)
 	if (bank && *bank)
 	{
 		const char* info;
-		if (musicCallbacks.PathForSoundfont)
+		if (musicCallbacks.path_for_soundfont)
 		{
-			info = musicCallbacks.PathForSoundfont(bank, SF_WOPN);
+			info = musicCallbacks.path_for_soundfont(bank, zmsx_sf_wopn);
 		}
 		else
 		{

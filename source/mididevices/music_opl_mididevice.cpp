@@ -76,7 +76,7 @@ protected:
 	void HandleLongEvent(const uint8_t *data, int len) override;
 	void ComputeOutput(float *buffer, int len) override;
 	bool ServiceStream(void *buff, int numbytes) override;
-	int GetDeviceType() const override { return MDEV_OPL; }
+	int GetDeviceType() const override { return zmsx_mdev_opl; }
 };
 
 

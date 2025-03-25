@@ -49,9 +49,9 @@ public:
 	virtual void ChangeSettingNum(const char *setting, double value);
 	virtual void ChangeSettingString(const char *setting, const char *value);
 	virtual std::string GetStats();
-	virtual int GetDeviceType() const { return MDEV_DEFAULT; }
+	virtual int GetDeviceType() const { return zmsx_mdev_default; }
 	virtual bool CanHandleSysex() const { return true; }
-	virtual zmsx_SoundStreamInfoEx GetStreamInfoEx() const;
+	virtual ZMSXSoundStreamInfoEx GetStreamInfoEx() const;
 
 protected:
 	MidiCallback Callback;
@@ -81,7 +81,7 @@ public:
 	virtual int Open() override;
 	virtual bool ServiceStream(void* buff, int numbytes);
 	int GetSampleRate() const { return SampleRate; }
-	zmsx_SoundStreamInfoEx GetStreamInfoEx() const override;
+	ZMSXSoundStreamInfoEx GetStreamInfoEx() const override;
 
 protected:
 	double Tempo;

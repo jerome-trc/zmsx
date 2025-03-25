@@ -60,11 +60,11 @@ struct Dummy
 	void ChangeSettingString(const char*, const char*) {}
 };
 
-#define devType() ((currSong)? (currSong)->GetDeviceType() : MDEV_DEFAULT)
+#define devType() ((currSong)? (currSong)->GetDeviceType() : zmsx_mdev_default)
 
 
 MiscConfig miscConfig;
-zmsx_Callbacks musicCallbacks;
+ZMSXCallbacks musicCallbacks;
 
 class SoundFontWrapperInterface : public MusicIO::SoundFontReaderInterface
 {
@@ -78,7 +78,7 @@ public:
 
 	struct MusicIO::FileInterface* open_file(const char* fn) override
 	{
-		auto rd = musicCallbacks.SF_OpenFile(handle, fn);
+		auto rd = musicCallbacks.sf_open_file(handle, fn);
 		if (rd)
 		{
 			auto fr = new CustomFileReader(rd);
@@ -89,11 +89,11 @@ public:
 	}
 	void add_search_path(const char* path) override
 	{
-		musicCallbacks.SF_AddToSearchPath(handle, path);
+		musicCallbacks.sf_add_to_search_path(handle, path);
 	}
 	void close() override
 	{
-		musicCallbacks.SF_Close(handle);
+		musicCallbacks.sf_close(handle);
 		delete this;
 	}
 };
@@ -101,8 +101,8 @@ public:
 namespace MusicIO {
 	SoundFontReaderInterface* ClientOpenSoundFont(const char* name, int type)
 	{
-		if (!musicCallbacks.OpenSoundFont) return nullptr;
-		auto iface = musicCallbacks.OpenSoundFont(name, type);
+		if (!musicCallbacks.sf_open_soundfont) return nullptr;
+		auto iface = musicCallbacks.sf_open_soundfont(name, type);
 		if (!iface) return nullptr;
 		return new SoundFontWrapperInterface(iface);
 	}
@@ -114,11 +114,11 @@ void ZMusic_Print(int type, const char* msg, va_list args)
 	static char printbuf[4096];
 	vsnprintf(printbuf, 4096, msg, args);
 
-	if (musicCallbacks.MessageFunc) {
-		musicCallbacks.MessageFunc((zmsx_MessageSeverity)type, printbuf);
+	if (musicCallbacks.message_func) {
+		musicCallbacks.message_func((ZMSXMessageLevel)type, printbuf);
 	}
 
-	else fputs(printbuf, type >= ZMUSIC_MSG_WARNING ? stderr : stdout);
+	else fputs(printbuf, type >= zmsx_msg_warning ? stderr : stdout);
 }
 
 void ZMusic_Printf(int type, const char* msg, ...)
@@ -129,12 +129,12 @@ void ZMusic_Printf(int type, const char* msg, ...)
 	va_end(ap);
 }
 
-DLL_EXPORT void zmsx_set_callbacks(const zmsx_Callbacks* cb)
+DLL_EXPORT void zmsx_set_callbacks(const ZMSXCallbacks* cb)
 {
 	musicCallbacks = *cb;
 	// If not all these are set the sound font interface is not usable.
-	if (!cb->SF_AddToSearchPath || !cb->SF_OpenFile || !cb->SF_Close)
-		musicCallbacks.OpenSoundFont = nullptr;
+	if (!cb->sf_add_to_search_path || !cb->sf_open_file || !cb->sf_close)
+		musicCallbacks.sf_open_soundfont = nullptr;
 }
 
 DLL_EXPORT void zmsx_set_genmidi(const uint8_t* data)
@@ -161,7 +161,7 @@ DLL_EXPORT void zmsx_set_dmxgus(const void* data, unsigned len)
 #endif
 }
 
-int ZMusic_Enumeratzmsx_MidiDevices()
+int ZMusic_EnumeratZMSXMidiDevices()
 {
 #ifdef HAVE_SYSTEM_MIDI
 	#ifdef __linux__
@@ -179,7 +179,7 @@ int ZMusic_Enumeratzmsx_MidiDevices()
 
 struct MidiDeviceList
 {
-	std::vector<zmsx_MidiOutDevice> devices;
+	std::vector<ZMSXMidiOutDevice> devices;
 	~MidiDeviceList()
 	{
 		for (auto& device : devices)
@@ -218,7 +218,7 @@ struct MidiDeviceList
 		auto& dev = sequencer.GetInternalDevices();
 		for (auto& d : dev)
 		{
-			zmsx_MidiOutDevice mdev = { strdup(d.Name.c_str()), d.ID, zmsx_devcls_mapper };	// fixme: Correctly determine the type of the device.
+			ZMSXMidiOutDevice mdev = { strdup(d.Name.c_str()), d.ID, zmsx_devcls_mapper };	// fixme: Correctly determine the type of the device.
 			devices.push_back(mdev);
 		}
 #elif _WIN32
@@ -237,7 +237,7 @@ struct MidiDeviceList
 				WideCharToMultiByte(CP_UTF8, 0, caps.szPname, (int)len, outbuf, size_needed, nullptr, nullptr);
 				outbuf[size_needed] = 0;
 
-				zmsx_MidiOutDevice mdev = { outbuf, int(id), caps.wTechnology };
+				ZMSXMidiOutDevice mdev = { outbuf, int(id), caps.wTechnology };
 				devices.push_back(mdev);
 			}
 		}
@@ -249,7 +249,7 @@ struct MidiDeviceList
 
 static MidiDeviceList devlist;
 
-DLL_EXPORT const zmsx_MidiOutDevice* zmsx_get_midi_devices(int* pAmount)
+DLL_EXPORT const ZMSXMidiOutDevice* zmsx_get_midi_devices(int* pAmount)
 {
 	if (devlist.devices.size() == 0) devlist.Build();
 	if (pAmount) *pAmount = (int)devlist.devices.size();
@@ -326,7 +326,7 @@ static void TimidityPlus_SetReverb()
 //
 //==========================================================================
 
-DLL_EXPORT bool zmsx_config_set_int(zmsx_IntConfigKey key, MusInfo *currSong, int value, int *pRealValue)
+DLL_EXPORT bool zmsx_config_set_int(ZMSXIntConfigKey key, MusInfo *currSong, int value, int *pRealValue)
 {
 	switch (key)
 	{
@@ -336,31 +336,31 @@ DLL_EXPORT bool zmsx_config_set_int(zmsx_IntConfigKey key, MusInfo *currSong, in
 #ifdef HAVE_ADL
 		case zmusic_adl_chips_count:
 			ChangeAndReturn(adlConfig.adl_chips_count, value, pRealValue);
-			return devType() == MDEV_ADL;
+			return devType() == zmsx_mdev_adl;
 
 		case zmusic_adl_emulator_id:
 			ChangeAndReturn(adlConfig.adl_emulator_id, value, pRealValue);
-			return devType() == MDEV_ADL;
+			return devType() == zmsx_mdev_adl;
 
 		case zmusic_adl_run_at_pcm_rate:
 			ChangeAndReturn(adlConfig.adl_run_at_pcm_rate, value, pRealValue);
-			return devType() == MDEV_ADL;
+			return devType() == zmsx_mdev_adl;
 
 		case zmusic_adl_fullpan:
 			ChangeAndReturn(adlConfig.adl_fullpan, value, pRealValue);
-			return devType() == MDEV_ADL;
+			return devType() == zmsx_mdev_adl;
 
 		case zmusic_adl_bank:
 			ChangeAndReturn(adlConfig.adl_bank, value, pRealValue);
-			return devType() == MDEV_ADL;
+			return devType() == zmsx_mdev_adl;
 
 		case zmusic_adl_use_custom_bank:
 			ChangeAndReturn(adlConfig.adl_use_custom_bank, value, pRealValue);
-			return devType() == MDEV_ADL;
+			return devType() == zmsx_mdev_adl;
 
 		case zmusic_adl_volume_model:
 			ChangeAndReturn(adlConfig.adl_volume_model, value, pRealValue);
-			return devType() == MDEV_ADL;
+			return devType() == zmsx_mdev_adl;
 #endif
 
 		case zmusic_fluid_reverb:
@@ -411,7 +411,7 @@ DLL_EXPORT bool zmsx_config_set_int(zmsx_IntConfigKey key, MusInfo *currSong, in
 			ChangeAndReturn(fluidConfig.fluid_interp, value, pRealValue);
 			return false;
 
-		case zmusic_fluid_samplerate:
+		case zmsx_fluid_samplerate:
 			// This will only take effect for the next song. (Q: Is this even needed?)
 			ChangeAndReturn(fluidConfig.fluid_samplerate, std::max<int>(value, 0), pRealValue);
 			return false;
@@ -466,7 +466,7 @@ DLL_EXPORT bool zmsx_config_set_int(zmsx_IntConfigKey key, MusInfo *currSong, in
 			if (value < 0) value = 0;
 			else if (value > 3) value = 3;
 			ChangeAndReturn(oplConfig.core, value, pRealValue);
-			return devType() == MDEV_OPL;
+			return devType() == zmsx_mdev_opl;
 
 		case zmusic_opl_fullpan:
 			ChangeAndReturn(oplConfig.fullpan, value, pRealValue);
@@ -475,36 +475,36 @@ DLL_EXPORT bool zmsx_config_set_int(zmsx_IntConfigKey key, MusInfo *currSong, in
 #ifdef HAVE_OPN
 		case zmusic_opn_chips_count:
 			ChangeAndReturn(opnConfig.opn_chips_count, value, pRealValue);
-			return devType() == MDEV_OPN;
+			return devType() == zmsx_mdev_opn;
 
 		case zmusic_opn_emulator_id:
 			ChangeAndReturn(opnConfig.opn_emulator_id, value, pRealValue);
-			return devType() == MDEV_OPN;
+			return devType() == zmsx_mdev_opn;
 
 		case zmusic_opn_run_at_pcm_rate:
 			ChangeAndReturn(opnConfig.opn_run_at_pcm_rate, value, pRealValue);
-			return devType() == MDEV_OPN;
+			return devType() == zmsx_mdev_opn;
 
 		case zmusic_opn_fullpan:
 			ChangeAndReturn(opnConfig.opn_fullpan, value, pRealValue);
-			return devType() == MDEV_OPN;
+			return devType() == zmsx_mdev_opn;
 
 		case zmusic_opn_use_custom_bank:
 			ChangeAndReturn(opnConfig.opn_use_custom_bank, value, pRealValue);
-			return devType() == MDEV_OPN;
+			return devType() == zmsx_mdev_opn;
 #endif
 #ifdef HAVE_GUS
 		case zmusic_gus_dmxgus:
 			ChangeAndReturn(gusConfig.gus_dmxgus, value, pRealValue);
-			return devType() == MDEV_GUS;
+			return devType() == zmsx_mdev_gus;
 
 		case zmusic_gus_midi_voices:
 			ChangeAndReturn(gusConfig.midi_voices, value, pRealValue);
-			return devType() == MDEV_GUS;
+			return devType() == zmsx_mdev_gus;
 
 		case zmusic_gus_memsize:
 			ChangeAndReturn(gusConfig.gus_memsize, value, pRealValue);
-			return devType() == MDEV_GUS;
+			return devType() == zmsx_mdev_gus;
 #endif
 #ifdef HAVE_TIMIDITY
 		case zmusic_timidity_modulation_wheel:
@@ -539,7 +539,7 @@ DLL_EXPORT bool zmsx_config_set_int(zmsx_IntConfigKey key, MusInfo *currSong, in
 		case zmusic_timidity_surround_chorus:
 			ChangeVarSync(TimidityPlus::timidity_surround_chorus, value);
 			if (pRealValue) *pRealValue = value;
-			return devType() == MDEV_TIMIDITY;
+			return devType() == zmsx_mdev_timidity;
 
 		case zmusic_timidity_channel_pressure:
 			ChangeVarSync(TimidityPlus::timidity_channel_pressure, value);
@@ -559,7 +559,7 @@ DLL_EXPORT bool zmsx_config_set_int(zmsx_IntConfigKey key, MusInfo *currSong, in
 		case zmusic_timidity_modulation_envelope:
 			ChangeVarSync(TimidityPlus::timidity_modulation_envelope, value);
 			if (pRealValue) *pRealValue = value;
-			return devType() == MDEV_TIMIDITY;
+			return devType() == zmsx_mdev_timidity;
 
 		case zmusic_timidity_overlap_voice_allow:
 			ChangeVarSync(TimidityPlus::timidity_overlap_voice_allow, value);
@@ -657,7 +657,7 @@ DLL_EXPORT bool zmsx_config_set_int(zmsx_IntConfigKey key, MusInfo *currSong, in
 	return false;
 }
 
-DLL_EXPORT bool zmsx_config_set_float(zmsx_FloatConfigKey key, MusInfo* currSong, float value, float *pRealValue)
+DLL_EXPORT bool zmsx_config_set_float(ZMSXFloatConfigKey key, MusInfo* currSong, float value, float *pRealValue)
 {
 	switch (key)
 	{
@@ -811,7 +811,7 @@ DLL_EXPORT bool zmsx_config_set_float(zmsx_FloatConfigKey key, MusInfo* currSong
 	return false;
 }
 
-DLL_EXPORT bool zmsx_config_set_string(zmsx_StringConfigKey key, MusInfo* currSong, const char *value)
+DLL_EXPORT bool zmsx_config_set_string(ZMSXStringConfigKey key, MusInfo* currSong, const char *value)
 {
 	switch (key)
 	{
@@ -819,45 +819,45 @@ DLL_EXPORT bool zmsx_config_set_string(zmsx_StringConfigKey key, MusInfo* currSo
 			return false;
 
 #ifdef HAVE_ADL
-		case zmusic_adl_custom_bank:
+		case zmsx_adl_custom_bank:
 			adlConfig.adl_custom_bank = value;
-			return devType() == MDEV_ADL;
+			return devType() == zmsx_mdev_adl;
 #endif
-		case zmusic_fluid_lib:
+		case zmsx_fluid_lib:
 			fluidConfig.fluid_lib = value;
 			return false; // only takes effect for next song.
 
-		case zmusic_fluid_patchset:
+		case zmsx_fluid_patchset:
 			fluidConfig.fluid_patchset = value;
 #ifdef HAVE_TIMIDITY
 			if (timidityConfig.timidity_config.empty()) timidityConfig.timidity_config = value; // Also use for Timidity++ if nothing has been set.
 #endif
-			return devType() == MDEV_FLUIDSYNTH;
+			return devType() == zmsx_mdev_fluidsynth;
 
 #ifdef HAVE_OPN
-		case zmusic_opn_custom_bank:
+		case zmsx_opn_custom_bank:
 			opnConfig.opn_custom_bank = value;
-			return devType() == MDEV_OPN && opnConfig.opn_use_custom_bank;
+			return devType() == zmsx_mdev_opn && opnConfig.opn_use_custom_bank;
 #endif
 #ifdef HAVE_GUS
-		case zmusic_gus_config:
+		case zmsx_gus_config:
 			gusConfig.gus_config = value;
-			return devType() == MDEV_GUS;
+			return devType() == zmsx_mdev_gus;
 #endif
 #ifdef HAVE_GUS
-		case zmusic_gus_patchdir:
+		case zmsx_gus_patchdir:
 			gusConfig.gus_patchdir = value;
-			return devType() == MDEV_GUS && gusConfig.gus_dmxgus;
+			return devType() == zmsx_mdev_gus && gusConfig.gus_dmxgus;
 #endif
 #ifdef HAVE_TIMIDITY
-		case zmusic_timidity_config:
+		case zmsx_timidity_config:
 			timidityConfig.timidity_config = value;
-			return devType() == MDEV_TIMIDITY;
+			return devType() == zmsx_mdev_timidity;
 #endif
 #ifdef HAVE_WILDMIDI
-		case zmusic_wildmidi_config:
+		case zmsx_wildmidi_config:
 			wildMidiConfig.config = value;
-			return devType() == MDEV_WILDMIDI;
+			return devType() == zmsx_mdev_wildmidi;
 #endif
 	}
 	return false;
@@ -865,95 +865,95 @@ DLL_EXPORT bool zmsx_config_set_string(zmsx_StringConfigKey key, MusInfo* currSo
 
 static zmsx_Setting config[] = {
 #ifdef HAVE_ADL
-	{"zmusic_adl_chips_count", zmusic_adl_chips_count, ZMUSIC_VAR_INT, 5},
-	{"zmusic_adl_emulator_id", zmusic_adl_emulator_id, ZMUSIC_VAR_INT, 0},
-	{"zmusic_adl_run_at_pcm_rate", zmusic_adl_run_at_pcm_rate, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_adl_fullpan", zmusic_adl_fullpan, ZMUSIC_VAR_BOOL, 1},
-	{"zmusic_adl_bank", zmusic_adl_bank, ZMUSIC_VAR_INT, 14},
-	{"zmusic_adl_use_custom_bank", zmusic_adl_use_custom_bank, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_adl_volume_model", zmusic_adl_volume_model, ZMUSIC_VAR_INT, 3},
-	{"zmusic_adl_custom_bank", zmusic_adl_custom_bank, ZMUSIC_VAR_STRING, 0},
+	{"zmusic_adl_chips_count", zmusic_adl_chips_count, zmsx_var_int, 5},
+	{"zmusic_adl_emulator_id", zmusic_adl_emulator_id, zmsx_var_int, 0},
+	{"zmusic_adl_run_at_pcm_rate", zmusic_adl_run_at_pcm_rate, zmsx_var_bool, 0},
+	{"zmusic_adl_fullpan", zmusic_adl_fullpan, zmsx_var_bool, 1},
+	{"zmusic_adl_bank", zmusic_adl_bank, zmsx_var_int, 14},
+	{"zmusic_adl_use_custom_bank", zmusic_adl_use_custom_bank, zmsx_var_bool, 0},
+	{"zmusic_adl_volume_model", zmusic_adl_volume_model, zmsx_var_int, 3},
+	{"zmsx_adl_custom_bank", zmsx_adl_custom_bank, zmsx_var_string, 0},
 #endif
-	{"zmusic_fluid_reverb", zmusic_fluid_reverb, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_fluid_chorus", zmusic_fluid_chorus, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_fluid_voices", zmusic_fluid_voices, ZMUSIC_VAR_INT, 128},
-	{"zmusic_fluid_interp", zmusic_fluid_interp, ZMUSIC_VAR_INT, 1},
-	{"zmusic_fluid_samplerate", zmusic_fluid_samplerate, ZMUSIC_VAR_INT, 0},
-	{"zmusic_fluid_threads", zmusic_fluid_threads, ZMUSIC_VAR_INT, 1},
-	{"zmusic_fluid_chorus_voices", zmusic_fluid_chorus_voices, ZMUSIC_VAR_INT, 3},
-	{"zmusic_fluid_chorus_type", zmusic_fluid_chorus_type, ZMUSIC_VAR_INT, 0},
-	{"zmusic_fluid_gain", zmusic_fluid_gain, ZMUSIC_VAR_FLOAT, 0},
-	{"zmusic_fluid_reverb_roomsize", zmusic_fluid_reverb_roomsize, ZMUSIC_VAR_FLOAT, 0.75f},
-	{"zmusic_fluid_reverb_damping", zmusic_fluid_reverb_damping, ZMUSIC_VAR_FLOAT, 0.23f},
-	{"zmusic_fluid_reverb_width", zmusic_fluid_reverb_width, ZMUSIC_VAR_FLOAT, 0.75f},
-	{"zmusic_fluid_reverb_level", zmusic_fluid_reverb_level, ZMUSIC_VAR_FLOAT, 0.57f},
-	{"zmusic_fluid_chorus_level", zmusic_fluid_chorus_level, ZMUSIC_VAR_FLOAT, 1.2f},
-	{"zmusic_fluid_chorus_speed", zmusic_fluid_chorus_speed, ZMUSIC_VAR_FLOAT, 0.3f},
-	{"zmusic_fluid_chorus_depth", zmusic_fluid_chorus_depth, ZMUSIC_VAR_FLOAT, 8},
-	{"zmusic_fluid_lib", zmusic_fluid_lib, ZMUSIC_VAR_STRING, 0},
+	{"zmusic_fluid_reverb", zmusic_fluid_reverb, zmsx_var_bool, 0},
+	{"zmusic_fluid_chorus", zmusic_fluid_chorus, zmsx_var_bool, 0},
+	{"zmusic_fluid_voices", zmusic_fluid_voices, zmsx_var_int, 128},
+	{"zmusic_fluid_interp", zmusic_fluid_interp, zmsx_var_int, 1},
+	{"zmsx_fluid_samplerate", zmsx_fluid_samplerate, zmsx_var_int, 0},
+	{"zmusic_fluid_threads", zmusic_fluid_threads, zmsx_var_int, 1},
+	{"zmusic_fluid_chorus_voices", zmusic_fluid_chorus_voices, zmsx_var_int, 3},
+	{"zmusic_fluid_chorus_type", zmusic_fluid_chorus_type, zmsx_var_int, 0},
+	{"zmusic_fluid_gain", zmusic_fluid_gain, zmsx_var_float, 0},
+	{"zmusic_fluid_reverb_roomsize", zmusic_fluid_reverb_roomsize, zmsx_var_float, 0.75f},
+	{"zmusic_fluid_reverb_damping", zmusic_fluid_reverb_damping, zmsx_var_float, 0.23f},
+	{"zmusic_fluid_reverb_width", zmusic_fluid_reverb_width, zmsx_var_float, 0.75f},
+	{"zmusic_fluid_reverb_level", zmusic_fluid_reverb_level, zmsx_var_float, 0.57f},
+	{"zmusic_fluid_chorus_level", zmusic_fluid_chorus_level, zmsx_var_float, 1.2f},
+	{"zmusic_fluid_chorus_speed", zmusic_fluid_chorus_speed, zmsx_var_float, 0.3f},
+	{"zmusic_fluid_chorus_depth", zmusic_fluid_chorus_depth, zmsx_var_float, 8},
+	{"zmsx_fluid_lib", zmsx_fluid_lib, zmsx_var_string, 0},
 #ifdef HAVE_OPL
-	{"zmusic_opl_numchips", zmusic_opl_numchips, ZMUSIC_VAR_INT, 2},
-	{"zmusic_opl_core", zmusic_opl_core, ZMUSIC_VAR_INT, 0},
-	{"zmusic_opl_fullpan", zmusic_opl_fullpan, ZMUSIC_VAR_BOOL, 1},
+	{"zmusic_opl_numchips", zmusic_opl_numchips, zmsx_var_int, 2},
+	{"zmusic_opl_core", zmusic_opl_core, zmsx_var_int, 0},
+	{"zmusic_opl_fullpan", zmusic_opl_fullpan, zmsx_var_bool, 1},
 #endif
 #ifdef HAVE_OPN
-	{"zmusic_opn_chips_count", zmusic_opn_chips_count, ZMUSIC_VAR_INT, 8},
-	{"zmusic_opn_emulator_id", zmusic_opn_emulator_id, ZMUSIC_VAR_INT, 0},
-	{"zmusic_opn_run_at_pcm_rate", zmusic_opn_run_at_pcm_rate, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_opn_fullpan", zmusic_opn_fullpan, ZMUSIC_VAR_BOOL, 2},
-	{"zmusic_opn_use_custom_bank", zmusic_opn_use_custom_bank, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_opn_custom_bank", zmusic_opn_custom_bank, ZMUSIC_VAR_STRING, 0},
+	{"zmusic_opn_chips_count", zmusic_opn_chips_count, zmsx_var_int, 8},
+	{"zmusic_opn_emulator_id", zmusic_opn_emulator_id, zmsx_var_int, 0},
+	{"zmusic_opn_run_at_pcm_rate", zmusic_opn_run_at_pcm_rate, zmsx_var_bool, 0},
+	{"zmusic_opn_fullpan", zmusic_opn_fullpan, zmsx_var_bool, 2},
+	{"zmusic_opn_use_custom_bank", zmusic_opn_use_custom_bank, zmsx_var_bool, 0},
+	{"zmsx_opn_custom_bank", zmsx_opn_custom_bank, zmsx_var_string, 0},
 #endif
 #ifdef HAVE_GUS
-	{"zmusic_gus_dmxgus", zmusic_gus_dmxgus, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_gus_midi_voices", zmusic_gus_midi_voices, ZMUSIC_VAR_INT, 32},
-	{"zmusic_gus_memsize", zmusic_gus_memsize, ZMUSIC_VAR_INT, 0},
-	{"zmusic_gus_config", zmusic_gus_config, ZMUSIC_VAR_STRING, 0},
-	{"zmusic_gus_patchdir", zmusic_gus_patchdir, ZMUSIC_VAR_STRING, 0},
+	{"zmusic_gus_dmxgus", zmusic_gus_dmxgus, zmsx_var_bool, 0},
+	{"zmusic_gus_midi_voices", zmusic_gus_midi_voices, zmsx_var_int, 32},
+	{"zmusic_gus_memsize", zmusic_gus_memsize, zmsx_var_int, 0},
+	{"zmsx_gus_config", zmsx_gus_config, zmsx_var_string, 0},
+	{"zmsx_gus_patchdir", zmsx_gus_patchdir, zmsx_var_string, 0},
 #endif
 #ifdef HAVE_TIMIDITY
-	{"zmusic_timidity_modulation_wheel", zmusic_timidity_modulation_wheel, ZMUSIC_VAR_BOOL, 1},
-	{"zmusic_timidity_portamento", zmusic_timidity_portamento, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_timidity_reverb", zmusic_timidity_reverb, ZMUSIC_VAR_INT, 0},
-	{"zmusic_timidity_reverb_level", zmusic_timidity_reverb_level, ZMUSIC_VAR_INT, 0},
-	{"zmusic_timidity_chorus", zmusic_timidity_chorus, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_timidity_surround_chorus", zmusic_timidity_surround_chorus, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_timidity_channel_pressure", zmusic_timidity_channel_pressure, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_timidity_lpf_def", zmusic_timidity_lpf_def, ZMUSIC_VAR_BOOL, 1},
-	{"zmusic_timidity_temper_control", zmusic_timidity_temper_control, ZMUSIC_VAR_BOOL, 1},
-	{"zmusic_timidity_modulation_envelope", zmusic_timidity_modulation_envelope, ZMUSIC_VAR_BOOL, 1},
-	{"zmusic_timidity_overlap_voice_allow", zmusic_timidity_overlap_voice_allow, ZMUSIC_VAR_BOOL, 1},
-	{"zmusic_timidity_drum_effect", zmusic_timidity_drum_effect, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_timidity_pan_delay", zmusic_timidity_pan_delay, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_timidity_key_adjust", zmusic_timidity_key_adjust, ZMUSIC_VAR_INT, 0},
-	{"zmusic_timidity_drum_power", zmusic_timidity_drum_power, ZMUSIC_VAR_FLOAT, 1},
-	{"zmusic_timidity_tempo_adjust", zmusic_timidity_tempo_adjust, ZMUSIC_VAR_FLOAT, 1},
-	{"zmusic_timidity_min_sustain_time", zmusic_timidity_min_sustain_time, ZMUSIC_VAR_FLOAT, 5000},
-	{"zmusic_timidity_config", zmusic_timidity_config, ZMUSIC_VAR_STRING, 0},
+	{"zmusic_timidity_modulation_wheel", zmusic_timidity_modulation_wheel, zmsx_var_bool, 1},
+	{"zmusic_timidity_portamento", zmusic_timidity_portamento, zmsx_var_bool, 0},
+	{"zmusic_timidity_reverb", zmusic_timidity_reverb, zmsx_var_int, 0},
+	{"zmusic_timidity_reverb_level", zmusic_timidity_reverb_level, zmsx_var_int, 0},
+	{"zmusic_timidity_chorus", zmusic_timidity_chorus, zmsx_var_bool, 0},
+	{"zmusic_timidity_surround_chorus", zmusic_timidity_surround_chorus, zmsx_var_bool, 0},
+	{"zmusic_timidity_channel_pressure", zmusic_timidity_channel_pressure, zmsx_var_bool, 0},
+	{"zmusic_timidity_lpf_def", zmusic_timidity_lpf_def, zmsx_var_bool, 1},
+	{"zmusic_timidity_temper_control", zmusic_timidity_temper_control, zmsx_var_bool, 1},
+	{"zmusic_timidity_modulation_envelope", zmusic_timidity_modulation_envelope, zmsx_var_bool, 1},
+	{"zmusic_timidity_overlap_voice_allow", zmusic_timidity_overlap_voice_allow, zmsx_var_bool, 1},
+	{"zmusic_timidity_drum_effect", zmusic_timidity_drum_effect, zmsx_var_bool, 0},
+	{"zmusic_timidity_pan_delay", zmusic_timidity_pan_delay, zmsx_var_bool, 0},
+	{"zmusic_timidity_key_adjust", zmusic_timidity_key_adjust, zmsx_var_int, 0},
+	{"zmusic_timidity_drum_power", zmusic_timidity_drum_power, zmsx_var_float, 1},
+	{"zmusic_timidity_tempo_adjust", zmusic_timidity_tempo_adjust, zmsx_var_float, 1},
+	{"zmusic_timidity_min_sustain_time", zmusic_timidity_min_sustain_time, zmsx_var_float, 5000},
+	{"zmsx_timidity_config", zmsx_timidity_config, zmsx_var_string, 0},
 #endif
 #ifdef HAVE_WILDMIDI
-	{"zmusic_wildmidi_reverb", zmusic_wildmidi_reverb, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_wildmidi_enhanced_resampling", zmusic_wildmidi_enhanced_resampling, ZMUSIC_VAR_BOOL, 1},
-	{"zmusic_wildmidi_config", zmusic_wildmidi_config, ZMUSIC_VAR_STRING, 0},
+	{"zmusic_wildmidi_reverb", zmusic_wildmidi_reverb, zmsx_var_bool, 0},
+	{"zmusic_wildmidi_enhanced_resampling", zmusic_wildmidi_enhanced_resampling, zmsx_var_bool, 1},
+	{"zmsx_wildmidi_config", zmsx_wildmidi_config, zmsx_var_string, 0},
 #endif
-	{"zmusic_mod_samplerate", zmusic_mod_samplerate, ZMUSIC_VAR_INT, 0},
-	{"zmusic_mod_volramp", zmusic_mod_volramp, ZMUSIC_VAR_INT, 2},
-	{"zmusic_mod_interp", zmusic_mod_interp, ZMUSIC_VAR_BOOL, 2},
-	{"zmusic_mod_autochip", zmusic_mod_autochip, ZMUSIC_VAR_BOOL, 0},
-	{"zmusic_mod_autochip_size_force", zmusic_mod_autochip_size_force, ZMUSIC_VAR_INT, 100},
-	{"zmusic_mod_autochip_size_scan", zmusic_mod_autochip_size_scan, ZMUSIC_VAR_INT, 500},
-	{"zmusic_mod_autochip_scan_threshold", zmusic_mod_autochip_scan_threshold, ZMUSIC_VAR_INT, 12},
-	{"zmusic_mod_dumb_mastervolume", zmusic_mod_dumb_mastervolume, ZMUSIC_VAR_FLOAT, 1},
+	{"zmusic_mod_samplerate", zmusic_mod_samplerate, zmsx_var_int, 0},
+	{"zmusic_mod_volramp", zmusic_mod_volramp, zmsx_var_int, 2},
+	{"zmusic_mod_interp", zmusic_mod_interp, zmsx_var_bool, 2},
+	{"zmusic_mod_autochip", zmusic_mod_autochip, zmsx_var_bool, 0},
+	{"zmusic_mod_autochip_size_force", zmusic_mod_autochip_size_force, zmsx_var_int, 100},
+	{"zmusic_mod_autochip_size_scan", zmusic_mod_autochip_size_scan, zmsx_var_int, 500},
+	{"zmusic_mod_autochip_scan_threshold", zmusic_mod_autochip_scan_threshold, zmsx_var_int, 12},
+	{"zmusic_mod_dumb_mastervolume", zmusic_mod_dumb_mastervolume, zmsx_var_float, 1},
 
-	{"zmusic_gme_stereodepth", zmusic_gme_stereodepth, ZMUSIC_VAR_FLOAT, 0},
+	{"zmusic_gme_stereodepth", zmusic_gme_stereodepth, zmsx_var_float, 0},
 
-	{"zmusic_snd_midiprecache", zmusic_snd_midiprecache, ZMUSIC_VAR_BOOL, 1},
-	{"zmusic_snd_streambuffersize", zmusic_snd_streambuffersize, ZMUSIC_VAR_INT, 64},
-	{"zmusic_snd_mididevice", zmusic_snd_mididevice, ZMUSIC_VAR_INT, 0},
-	{"zmusic_snd_outputrate", zmusic_snd_outputrate, ZMUSIC_VAR_INT, 44100},
-	{"zmusic_snd_musicvolume", zmusic_snd_musicvolume, ZMUSIC_VAR_FLOAT, 1},
-	{"zmusic_relative_volume", zmusic_relative_volume, ZMUSIC_VAR_FLOAT, 1},
-	{"zmusic_snd_mastervolume", zmusic_snd_mastervolume, ZMUSIC_VAR_FLOAT, 1},
+	{"zmusic_snd_midiprecache", zmusic_snd_midiprecache, zmsx_var_bool, 1},
+	{"zmusic_snd_streambuffersize", zmusic_snd_streambuffersize, zmsx_var_int, 64},
+	{"zmusic_snd_mididevice", zmusic_snd_mididevice, zmsx_var_int, 0},
+	{"zmusic_snd_outputrate", zmusic_snd_outputrate, zmsx_var_int, 44100},
+	{"zmusic_snd_musicvolume", zmusic_snd_musicvolume, zmsx_var_float, 1},
+	{"zmusic_relative_volume", zmusic_relative_volume, zmsx_var_float, 1},
+	{"zmusic_snd_mastervolume", zmusic_snd_mastervolume, zmsx_var_float, 1},
 	{}
 };
 

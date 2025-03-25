@@ -162,11 +162,11 @@ void MPG123Decoder::getInfo(int *samplerate, ChannelConfig *chans, SampleType *t
     *samplerate = srate;
 
     if(channels == 2)
-        *chans = ChannelConfig_Stereo;
+        *chans = zmsx_chancfg_stereo;
     else
-        *chans = ChannelConfig_Mono;
+        *chans = zmsx_chancfg_mono;
 
-    *type = SampleType_Int16;
+    *type = zmsx_sample_int16;
 }
 
 size_t MPG123Decoder::read(char *buffer, size_t bytes)

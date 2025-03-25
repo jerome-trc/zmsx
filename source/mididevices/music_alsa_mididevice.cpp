@@ -388,7 +388,7 @@ void AlsaMIDIDevice::PumpEvents() {
 			continue;
 		}
 		if (tick_delta < 0) {
-			ZMusic_Printf(ZMUSIC_MSG_ERROR, "Alsa sequencer underrun: %d ticks!\n", tick_delta);
+			ZMusic_Printf(zmsx_msg_error, "Alsa sequencer underrun: %d ticks!\n", tick_delta);
 		}
 
 		// We found an event worthy of sending to the sequencer
@@ -397,7 +397,7 @@ void AlsaMIDIDevice::PumpEvents() {
 		snd_seq_ev_schedule_tick(&event.data, QueueId, false, buffer_ticks + event.ticks);
 		int result = snd_seq_event_output(sequencer.handle, &event.data);
 		if(result < 0) {
-			ZMusic_Printf(ZMUSIC_MSG_ERROR, "Alsa sequencer did not accept event: error %d!\n", result);
+			ZMusic_Printf(zmsx_msg_error, "Alsa sequencer did not accept event: error %d!\n", result);
 			if(WaitForExit(pump_step, status)) {
 				break;
 			}

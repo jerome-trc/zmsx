@@ -37,7 +37,7 @@
 #include <alsa/asoundlib.h>
 #include <sstream>
 
-zmsx_MidiDeviceClass MidiOutDeviceInternal::GetDeviceClass() const
+ZMSXMidiDeviceClass MidiOutDeviceInternal::GetDeviceClass() const
 {
 	if (type & SND_SEQ_PORT_TYPE_SYNTH)
 		return zmsx_devcls_fmsynth;

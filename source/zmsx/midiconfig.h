@@ -153,5 +153,5 @@ extern TimidityConfig timidityConfig;
 extern WildMidiConfig wildMidiConfig;
 extern DumbConfig dumbConfig;
 extern MiscConfig miscConfig;
-extern zmsx_Callbacks musicCallbacks;
+extern ZMSXCallbacks musicCallbacks;
 

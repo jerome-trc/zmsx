@@ -132,16 +132,16 @@ bool SndFileDecoder::open(MusicIO::FileInterface *reader)
 	return false;
 }
 
-void SndFileDecoder::getInfo(int *samplerate, zmsx_ChannelConfig *chans, zmsx_SampleType *type)
+void SndFileDecoder::getInfo(int *samplerate, ZMSXChannelConfig *chans, ZMSXSampleType *type)
 {
     *samplerate = SndInfo.samplerate;
 
     if(SndInfo.channels == 2)
-        *chans = ChannelConfig_Stereo;
+        *chans = zmsx_chancfg_stereo;
     else
-        *chans = ChannelConfig_Mono;
+        *chans = zmsx_chancfg_mono;
 
-    *type = SampleType_Int16;
+    *type = zmsx_sample_int16;
 }
 
 size_t SndFileDecoder::read(char *buffer, size_t bytes)

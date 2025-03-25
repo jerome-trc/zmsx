@@ -92,15 +92,15 @@ SoftSynthMIDIDevice::~SoftSynthMIDIDevice()
 //
 //==========================================================================
 
-zmsx_SoundStreamInfoEx SoftSynthMIDIDevice::GetStreamInfoEx() const
+ZMSXSoundStreamInfoEx SoftSynthMIDIDevice::GetStreamInfoEx() const
 {
 	int chunksize = (SampleRate / StreamBlockSize) * 4;
 	if (!isMono)
 	{
 		chunksize *= 2;
 	}
-	return { chunksize, SampleRate, SampleType_Float32,
-		isMono ? ChannelConfig_Mono : ChannelConfig_Stereo };
+	return { chunksize, SampleRate, zmsx_sample_float32,
+		isMono ? zmsx_chancfg_mono : zmsx_chancfg_stereo };
 }
 
 //==========================================================================

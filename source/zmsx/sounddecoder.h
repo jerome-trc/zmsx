@@ -7,7 +7,7 @@ struct SoundDecoder
 {
 	static SoundDecoder* zmsx_create_decoder(MusicIO::FileInterface* reader);
 
-    virtual void getInfo(int *samplerate, zmsx_ChannelConfig *chans, zmsx_SampleType *type) = 0;
+    virtual void getInfo(int *samplerate, ZMSXChannelConfig *chans, ZMSXSampleType *type) = 0;
 
     virtual size_t read(char *buffer, size_t bytes) = 0;
     virtual std::vector<uint8_t> readAll();

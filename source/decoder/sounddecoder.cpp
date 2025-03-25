@@ -90,8 +90,8 @@ extern "C"
 short* dumb_decode_vorbis(int outlen, const void* oggstream, int sizebytes)
 {
 	short* samples = (short*)calloc(1, outlen);
-	zmsx_ChannelConfig chans;
-	zmsx_SampleType type;
+	ZMSXChannelConfig chans;
+	ZMSXSampleType type;
 	int srate;
 
 	// The decoder will take ownership of the reader if it succeeds so this may not be a local variable.
@@ -105,15 +105,15 @@ short* dumb_decode_vorbis(int outlen, const void* oggstream, int sizebytes)
 	}
 
 	decoder->getInfo(&srate, &chans, &type);
-	if (chans != ChannelConfig_Mono)
+	if (chans != zmsx_chancfg_mono)
 	{
 		delete decoder;
 		return samples;
 	}
 
-	if(type == SampleType_Int16)
+	if(type == zmsx_sample_int16)
 		decoder->read((char*)samples, outlen);
-	else if(type == SampleType_Float32)
+	else if(type == zmsx_sample_float32)
 	{
 		constexpr size_t tempsize = 1024;
 		float temp[tempsize];
@@ -134,7 +134,7 @@ short* dumb_decode_vorbis(int outlen, const void* oggstream, int sizebytes)
 			done += got;
 		}
 	}
-	else if(type == SampleType_UInt8)
+	else if(type == zmsx_sample_uint8)
 	{
 		constexpr size_t tempsize = 1024;
 		uint8_t temp[tempsize];
@@ -166,7 +166,7 @@ DLL_EXPORT struct SoundDecoder* zmsx_create_decoder(const uint8_t* data, size_t 
 	return res;
 }
 
-DLL_EXPORT void zmsx_sounddecoder_get_info(struct SoundDecoder* decoder, int* samplerate, zmsx_ChannelConfig* chans, zmsx_SampleType* type)
+DLL_EXPORT void zmsx_sounddecoder_get_info(struct SoundDecoder* decoder, int* samplerate, ZMSXChannelConfig* chans, ZMSXSampleType* type)
 {
 	if (decoder) decoder->getInfo(samplerate, chans, type);
 	else if (samplerate) *samplerate = 0;

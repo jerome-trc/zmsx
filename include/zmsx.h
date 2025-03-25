@@ -17,76 +17,76 @@ struct SoundDecoder;	// Anonymous to the client.
 // These constants must match the corresponding values of the Windows headers
 // to avoid readjustment in the native Windows device's playback functions
 // and should not be changed.
-typedef enum zmsx_MidiDeviceClass_ {
+typedef enum ZMSXMidiDeviceClass {
 	zmsx_devcls_midiport = 1,
 	zmsx_devcls_synth,
 	zmsx_devcls_sqsynth,
 	zmsx_devcls_fmsynth,
 	zmsx_devcls_mapper,
 	zmsx_devcls_wavetable,
-	zmsx_devcls_swsynth
-} zmsx_MidiDeviceClass;
+	zmsx_devcls_swsynth,
+} ZMSXMidiDeviceClass;
 
-typedef enum zmsx_MidiType_ {
-	MIDI_NOTMIDI,
-	MIDI_MIDI,
-	MIDI_HMI,
-	MIDI_XMI,
-	MIDI_MUS,
-	MIDI_MIDS
-} zmsx_MidiType;
+typedef enum ZMSXMidiType {
+	zmsx_midi_notmidi,
+	zmsx_midi_midi,
+	zmsx_midi_hmi,
+	zmsx_midi_xmi,
+	zmsx_midi_mus,
+	zmsx_midi_mids,
+} ZMSXMidiType;
 
-typedef enum zmsx_MidiDevice_ {
-	MDEV_DEFAULT = -1,
-	MDEV_STANDARD = 0,
-	MDEV_OPL = 1,
-	MDEV_SNDSYS = 2,
-	MDEV_TIMIDITY = 3,
-	MDEV_FLUIDSYNTH = 4,
-	MDEV_GUS = 5,
-	MDEV_WILDMIDI = 6,
-	MDEV_ADL = 7,
-	MDEV_OPN = 8,
+typedef enum ZMSXMidiDevice {
+	zmsx_mdev_default = -1,
+	zmsx_mdev_standard = 0,
+	zmsx_mdev_opl = 1,
+	zmsx_mdev_sndsys = 2,
+	zmsx_mdev_timidity = 3,
+	zmsx_mdev_fluidsynth = 4,
+	zmsx_mdev_gus = 5,
+	zmsx_mdev_wildmidi = 6,
+	zmsx_mdev_adl = 7,
+	zmsx_mdev_opn = 8,
 
-	MDEV_COUNT
-} zmsx_MidiDevice;
+	_zmsx_mdev_count_,
+} ZMSXMidiDevice;
 
-typedef enum zmsx_SoundFontTypes_ {
-	SF_SF2 = 1,
-	SF_GUS = 2,
-	SF_WOPL = 4,
-	SF_WOPN = 8
-} zmsx_SoundFontTypes;
+typedef enum ZMSXSoundFontTypes {
+	zmsx_sf_sf2 = 1,
+	zmsx_sf_gus = 2,
+	zmsx_sf_wopl = 4,
+	zmsx_sf_wopn = 8,
+} ZMSXSoundFontTypes;
 
-typedef struct zmsx_SoundStreamInfo_ {
+typedef struct ZMSXSoundStreamInfo {
 	/// If 0, the song doesn't use streaming
 	/// but plays through a different interface.
-	int mBufferSize;
-	int mSampleRate;
+	int buffer_size;
+	int sample_rate;
 	/// If negative, 16 bit integer format is used instead of floating point.
-	int mNumChannels;
-} zmsx_SoundStreamInfo;
+	int num_channels;
+} ZMSXSoundStreamInfo;
 
-typedef enum zmsx_SampleType_ {
-	SampleType_UInt8,
-	SampleType_Int16,
-	SampleType_Float32
-} zmsx_SampleType;
+typedef enum ZMSXSampleType {
+	zmsx_sample_uint8,
+	zmsx_sample_int16,
+	zmsx_sample_float32
+} ZMSXSampleType;
 
-typedef enum zmsx_ChannelConfig_ {
-	ChannelConfig_Mono,
-	ChannelConfig_Stereo
-} zmsx_ChannelConfig;
+typedef enum ZMSXChannelConfig {
+	zmsx_chancfg_mono,
+	zmsx_chancfg_stereo
+} ZMSXChannelConfig;
 
-typedef struct zmsx_SoundStreamInfoEx_ {
+typedef struct ZMSXSoundStreamInfoEx {
 	/// If 0, the song doesn't use streaming but plays through a different interface.
-	int mBufferSize;
-	int mSampleRate;
-	zmsx_SampleType mSampleType;
-	zmsx_ChannelConfig mChannelConfig;
-} zmsx_SoundStreamInfoEx;
+	int buffer_size;
+	int sample_rate;
+	ZMSXSampleType sample_type;
+	ZMSXChannelConfig channel_config;
+} ZMSXSoundStreamInfoEx;
 
-typedef enum zmsx_IntConfigKey_ {
+typedef enum ZMSXIntConfigKey {
 	zmusic_adl_chips_count,
 	zmusic_adl_emulator_id,
 	zmusic_adl_run_at_pcm_rate,
@@ -99,7 +99,7 @@ typedef enum zmsx_IntConfigKey_ {
 	zmusic_fluid_chorus,
 	zmusic_fluid_voices,
 	zmusic_fluid_interp,
-	zmusic_fluid_samplerate,
+	zmsx_fluid_samplerate,
 	zmusic_fluid_threads,
 	zmusic_fluid_chorus_voices,
 	zmusic_fluid_chorus_type,
@@ -152,9 +152,9 @@ typedef enum zmsx_IntConfigKey_ {
 	zmusic_snd_outputrate,
 
 	NUM_ZMUSIC_INT_CONFIGS
-} zmsx_IntConfigKey;
+} ZMSXIntConfigKey;
 
-typedef enum zmsx_FloatConfigKey_ {
+typedef enum ZMSXFloatConfigKey {
 	zmusic_fluid_gain = 1000,
 	zmusic_fluid_reverb_roomsize,
 	zmusic_fluid_reverb_damping,
@@ -176,89 +176,91 @@ typedef enum zmsx_FloatConfigKey_ {
 	zmusic_snd_mastervolume,
 
 	NUM_FLOAT_CONFIGS
-} zmsx_FloatConfigKey;
+} ZMSXFloatConfigKey;
 
-typedef enum zmsx_StringConfigKey_ {
-	zmusic_adl_custom_bank = 2000,
-	zmusic_fluid_lib,
-	zmusic_fluid_patchset,
-	zmusic_opn_custom_bank,
-	zmusic_gus_config,
-	zmusic_gus_patchdir,
-	zmusic_timidity_config,
-	zmusic_wildmidi_config,
+typedef enum ZMSXStringConfigKey {
+	zmsx_adl_custom_bank = 2000,
+	zmsx_fluid_lib,
+	zmsx_fluid_patchset,
+	zmsx_opn_custom_bank,
+	zmsx_gus_config,
+	zmsx_gus_patchdir,
+	zmsx_timidity_config,
+	zmsx_wildmidi_config,
 
 	NUM_STRING_CONFIGS
-} zmsx_StringConfigKey;
+} ZMSXStringConfigKey;
 
-typedef struct zmsx_CustomReader_ {
+typedef struct ZMSXCustomReader {
 	void* handle;
-	char* (*gets)(struct zmsx_CustomReader_* handle, char* buff, int n);
-	long (*read)(struct zmsx_CustomReader_* handle, void* buff, int32_t size);
-	long (*seek)(struct zmsx_CustomReader_* handle, long offset, int whence);
-	long (*tell)(struct zmsx_CustomReader_* handle);
-	void (*close)(struct zmsx_CustomReader_* handle);
-} zmsx_CustomReader;
+	char* (*gets)(struct ZMSXCustomReader* handle, char* buff, int n);
+	long (*read)(struct ZMSXCustomReader* handle, void* buff, int32_t size);
+	long (*seek)(struct ZMSXCustomReader* handle, long offset, int whence);
+	long (*tell)(struct ZMSXCustomReader* handle);
+	void (*close)(struct ZMSXCustomReader* handle);
+} ZMSXCustomReader;
 
-typedef struct zmsx_MidiOutDevice_ {
+typedef struct ZMSXMidiOutDevice {
 	char *Name;
 	int ID;
 	int Technology;
-} zmsx_MidiOutDevice;
+} ZMSXMidiOutDevice;
 
-typedef enum zmsx_MessageSeverity_ {
-	ZMUSIC_MSG_VERBOSE = 1,
-	ZMUSIC_MSG_DEBUG = 5,
-	ZMUSIC_MSG_NOTIFY = 10,
-	ZMUSIC_MSG_WARNING = 50,
-	ZMUSIC_MSG_ERROR = 100,
-	ZMUSIC_MSG_FATAL = 666,
-} zmsx_MessageSeverity;
+typedef enum ZMSXMessageLevel {
+	zmsx_msg_verbose = 1,
+	zmsx_msg_debug = 5,
+	zmsx_msg_notify = 10,
+	zmsx_msg_warning = 50,
+	zmsx_msg_error = 100,
+	zmsx_msg_fatal = 666,
+} ZMSXMessageLevel;
 
-typedef struct zmsx_Callbacks_ {
-	/// Callbacks the client can install to capture messages from the backends
-	/// or to provide sound font data.
+/// Callbacks the client can install to capture messages from the backends
+/// or to provide sound font data.
+typedef struct ZMSXCallbacks {
+	/// Used to handle client-specific path macros (e.g. `~`, `.`, and `..`)
+	/// and environment variables.
+	/// If not set, the path may not contain any special tokens that may need expansion.
+	const char *(*canonicalize)(const char* path);
 
-	void (*MessageFunc)(zmsx_MessageSeverity severity, const char* msg);
+	void (*message_func)(ZMSXMessageLevel severity, const char* msg);
 	// The message callbacks are optional, without them the output goes to stdout.
 
-	/// Retrieves the path to a soundfont identified by an identifier. Only needed if the client virtualizes the sound font names
-	const char *(*PathForSoundfont)(const char *name, int type);
+	/// Retrieves the path to a soundfont identified by an identifier.
+	/// Only needed if the client virtualizes the soundfont names.
+	/// The returned path needs to be freed by the caller if applicable.
+	const char *(*path_for_soundfont)(const char *name, int type);
 
 	// The sound font callbacks are for allowing the client to customize sound font management and they are optional.
 	// They only need to be defined if the client virtualizes the sound font management and doesn't pass real paths to the music code.
 	// Without them only paths to real files can be used. If one of these gets set, all must be set.
 
 	/// This opens a sound font. Must return a handle with which the sound font's content can be read.
-	void *(*OpenSoundFont)(const char* name, int type);
+	void *(*sf_open_soundfont)(const char* name, int type);
 
 	/// Opens a file in the sound font. For GUS patch sets this will try to open each patch with this function.
 	/// For other formats only the sound font's actual name can be requested.
 	/// When passed NULL this must open the Timidity config file, if this is requested for an SF2 sound font it should be synthesized.
-	zmsx_CustomReader* (*SF_OpenFile)(void* handle, const char* fn);
+	ZMSXCustomReader* (*sf_open_file)(void* handle, const char* fn);
 
 	/// Adds a path to the list of directories in which files must be looked for.
-	void (*SF_AddToSearchPath)(void* handle, const char* path);
+	void (*sf_add_to_search_path)(void* handle, const char* path);
 
-	// Closes the sound font reader.
-	void (*SF_Close)(void* handle);
+	/// Closes the sound font reader.
+	void (*sf_close)(void* handle);
+} ZMSXCallbacks;
 
-	/// Used to handle client-specific path macros.
-	/// If not set, the path may not contain any special tokens that may need expansion.
-	const char *(*NicePath)(const char* path);
-} zmsx_Callbacks;
-
-typedef enum zmsx_VarType_ {
-	ZMUSIC_VAR_INT,
-	ZMUSIC_VAR_BOOL,
-	ZMUSIC_VAR_FLOAT,
-	ZMUSIC_VAR_STRING,
-} zmsx_VarType;
+typedef enum ZMSXVarType {
+	zmsx_var_int,
+	zmsx_var_bool,
+	zmsx_var_float,
+	zmsx_var_string,
+} ZMSXVarType;
 
 typedef struct zmsx_Setting_ {
 	const char* name;
 	int identifier;
-	zmsx_VarType type;
+	ZMSXVarType type;
 	float defaultVal;
 	const char* defaultString;
 } zmsx_Setting;
@@ -271,8 +273,8 @@ typedef struct zmsx_Setting_ {
 #endif // if defined(_MSC_VER) && !defined(ZMSX_STATIC)
 
 // Note that the internal 'class' definitions are not C compatible!
-typedef struct _ZMusic_MidiSource_Struct { int zm1; } *zmsx_MidiSource;
-typedef struct _ZMusic_MusicStream_Struct { int zm2; } *zmsx_MusicStream;
+typedef struct ZMSXMidiSource { int zm1; } ZMSXMidiSource;
+typedef struct ZMSXMusicStream { int zm2; } ZMSXMusicStream;
 struct SoundDecoder;
 
 #endif // ifndef ZMSX_HPP
@@ -286,7 +288,7 @@ extern "C" {
 	DLL_IMPORT const char* zmsx_get_last_error(void);
 
 	/// Sets callbacks for functionality that the client needs to provide.
-	DLL_IMPORT void zmsx_set_callbacks(const zmsx_Callbacks* callbacks);
+	DLL_IMPORT void zmsx_set_callbacks(const ZMSXCallbacks* callbacks);
 
 	/// Sets GenMidi data for OPL playback.
 	/// If this isn't provided the OPL synth will not work.
@@ -304,95 +306,95 @@ extern "C" {
 
 	/// These exports are needed by the MIDI dumpers which need to remain on the client side
 	/// because they need access to the client's file system.
-	DLL_IMPORT zmsx_MidiType zmsx_identify_midi_type(uint32_t* id, int size);
+	DLL_IMPORT ZMSXMidiType zmsx_identify_midi_type(uint32_t* id, int size);
 
-	DLL_IMPORT zmsx_MidiSource
-		zmsx_create_midi_source(const uint8_t* data, size_t length, zmsx_MidiType miditype);
+	DLL_IMPORT ZMSXMidiSource*
+		zmsx_create_midi_source(const uint8_t* data, size_t length, ZMSXMidiType miditype);
 
 	DLL_IMPORT bool zmsx_midi_dump_wave(
-		zmsx_MidiSource source,
-		zmsx_MidiDevice devtype,
+		ZMSXMidiSource* source,
+		ZMSXMidiDevice devtype,
 		const char* devarg,
 		const char* outname,
 		int subsong,
 		int samplerate
 	);
 
-	DLL_IMPORT zmsx_MusicStream
-		zmsx_open_song(zmsx_CustomReader* reader, zmsx_MidiDevice device, const char* args);
+	DLL_IMPORT ZMSXMusicStream*
+		zmsx_open_song(ZMSXCustomReader* reader, ZMSXMidiDevice device, const char* args);
 
-	DLL_IMPORT zmsx_MusicStream
-		zmsx_open_song_file(const char* filename, zmsx_MidiDevice device, const char* args);
+	DLL_IMPORT ZMSXMusicStream*
+		zmsx_open_song_file(const char* filename, ZMSXMidiDevice device, const char* args);
 
-	DLL_IMPORT zmsx_MusicStream zmsx_open_song_mem(
+	DLL_IMPORT ZMSXMusicStream* zmsx_open_song_mem(
 		const void* mem,
 		size_t size,
-		zmsx_MidiDevice device,
+		ZMSXMidiDevice device,
 		const char* Args
 	);
 
-	DLL_IMPORT zmsx_MusicStream zmsx_open_song_cd(int track, int cdid);
+	DLL_IMPORT ZMSXMusicStream* zmsx_open_song_cd(int track, int cdid);
 
-	DLL_IMPORT bool zmsx_fill_stream(zmsx_MusicStream stream, void* buff, int len);
+	DLL_IMPORT bool zmsx_fill_stream(ZMSXMusicStream* stream, void* buff, int len);
 
-	DLL_IMPORT bool zmsx_start(zmsx_MusicStream song, int subsong, bool loop);
+	DLL_IMPORT bool zmsx_start(ZMSXMusicStream* song, int subsong, bool loop);
 
-	DLL_IMPORT void zmsx_pause(zmsx_MusicStream song);
+	DLL_IMPORT void zmsx_pause(ZMSXMusicStream* song);
 
-	DLL_IMPORT void zmsx_resume(zmsx_MusicStream song);
+	DLL_IMPORT void zmsx_resume(ZMSXMusicStream* song);
 
-	DLL_IMPORT void zmsx_update(zmsx_MusicStream song);
+	DLL_IMPORT void zmsx_update(ZMSXMusicStream* song);
 
-	DLL_IMPORT bool zmsx_is_playing(zmsx_MusicStream song);
+	DLL_IMPORT bool zmsx_is_playing(ZMSXMusicStream* song);
 
-	DLL_IMPORT void zmsx_stop(zmsx_MusicStream song);
+	DLL_IMPORT void zmsx_stop(ZMSXMusicStream* song);
 
-	DLL_IMPORT void zmsx_close(zmsx_MusicStream song);
+	DLL_IMPORT void zmsx_close(ZMSXMusicStream* song);
 
-	DLL_IMPORT bool zmsx_set_subsong(zmsx_MusicStream song, int subsong);
+	DLL_IMPORT bool zmsx_set_subsong(ZMSXMusicStream* song, int subsong);
 
-	DLL_IMPORT bool zmsx_is_looping(zmsx_MusicStream song);
+	DLL_IMPORT bool zmsx_is_looping(const ZMSXMusicStream* song);
 
-	DLL_IMPORT int zmsx_get_device_type(zmsx_MusicStream song);
+	DLL_IMPORT int zmsx_get_device_type(const ZMSXMusicStream* song);
 
-	DLL_IMPORT bool zmsx_is_midi(zmsx_MusicStream song);
+	DLL_IMPORT bool zmsx_is_midi(const ZMSXMusicStream* song);
 
-	DLL_IMPORT void zmsx_volume_changed(zmsx_MusicStream song);
+	DLL_IMPORT void zmsx_volume_changed(ZMSXMusicStream* song);
 
 	DLL_IMPORT bool
-		zmsx_write_smf(zmsx_MidiSource source, const char* fn, int looplimit);
+		zmsx_write_smf(ZMSXMidiSource source, const char* fn, int looplimit);
 
-	DLL_IMPORT void zmsx_get_stream_info(zmsx_MusicStream song, zmsx_SoundStreamInfo* info);
+	DLL_IMPORT void zmsx_get_stream_info(ZMSXMusicStream* song, ZMSXSoundStreamInfo* info);
 
 	DLL_IMPORT void zmsx_get_stream_info_ex(
-		zmsx_MusicStream song,
-		zmsx_SoundStreamInfoEx* info
+		ZMSXMusicStream* song,
+		ZMSXSoundStreamInfoEx* info
 	);
 
 	// Configuration interface. The return value specifies if a music restart is needed.
 	// RealValue should be written back to the CVAR or whatever other method the client uses to store configuration state.
 
 	DLL_IMPORT bool zmsx_config_set_int(
-		zmsx_IntConfigKey key,
-		zmsx_MusicStream song,
+		ZMSXIntConfigKey key,
+		ZMSXMusicStream* song,
 		int value,
 		int* pRealValue
 	);
 
 	DLL_IMPORT bool zmsx_config_set_float(
-		zmsx_FloatConfigKey key,
-		zmsx_MusicStream song,
+		ZMSXFloatConfigKey key,
+		ZMSXMusicStream* song,
 		float value,
 		float* pRealValue
 	);
 
 	DLL_IMPORT bool zmsx_config_set_string(
-		zmsx_StringConfigKey key,
-		zmsx_MusicStream song,
+		ZMSXStringConfigKey key,
+		ZMSXMusicStream* song,
 		const char* value
 	);
 
-	DLL_IMPORT const char* zmsx_get_stats(zmsx_MusicStream song);
+	DLL_IMPORT const char* zmsx_get_stats(ZMSXMusicStream* song);
 
 	DLL_IMPORT struct SoundDecoder* zmsx_create_decoder(
 		const uint8_t* data,
@@ -403,8 +405,8 @@ extern "C" {
 	DLL_IMPORT void zmsx_sounddecoder_get_info(
 		struct SoundDecoder* decoder,
 		int* samplerate,
-		zmsx_ChannelConfig* chans,
-		zmsx_SampleType* type
+		ZMSXChannelConfig* chans,
+		ZMSXSampleType* type
 	);
 
 	DLL_IMPORT size_t
@@ -423,7 +425,7 @@ extern "C" {
 
 	// The rest of the decoder interface is only useful for streaming music.
 
-	DLL_IMPORT const zmsx_MidiOutDevice *zmsx_get_midi_devices(int *pAmount);
+	DLL_IMPORT const ZMSXMidiOutDevice *zmsx_get_midi_devices(int *pAmount);
 
 	DLL_IMPORT int zmsx_get_adl_banks(const char* const** pNames);
 
@@ -452,8 +454,8 @@ extern "C" {
 }
 
 inline bool ChangeMusicSetting(
-	zmsx_IntConfigKey key,
-	zmsx_MusicStream song,
+	ZMSXIntConfigKey key,
+	ZMSXMusicStream* song,
 	int value,
 	int* pRealValue = nullptr
 ) {
@@ -461,8 +463,8 @@ inline bool ChangeMusicSetting(
 }
 
 inline bool ChangeMusicSetting(
-	zmsx_FloatConfigKey key,
-	zmsx_MusicStream song,
+	ZMSXFloatConfigKey key,
+	ZMSXMusicStream* song,
 	float value,
 	float* pRealValue = nullptr
 ) {
@@ -470,8 +472,8 @@ inline bool ChangeMusicSetting(
 }
 
 inline bool ChangeMusicSetting(
-	zmsx_StringConfigKey key,
-	zmsx_MusicStream song,
+	ZMSXStringConfigKey key,
+	ZMSXMusicStream* song,
 	const char* value
 ) {
 	return zmsx_config_set_string(key, song, value);
@@ -484,7 +486,7 @@ inline bool ChangeMusicSetting(
 
 typedef const char* (*pfn_zmsx_get_last_error)(void);
 
-typedef void (*pfn_zmsx_set_callbacks)(const zmsx_Callbacks* callbacks);
+typedef void (*pfn_zmsx_set_callbacks)(const ZMSXCallbacks* callbacks);
 
 typedef void (*pfn_zmsx_set_genmidi)(const uint8_t* data);
 
@@ -494,103 +496,103 @@ typedef void (*pfn_zmsx_set_dmxgus)(const void* data, unsigned len);
 
 typedef const zmsx_Setting* (*pfn_zmsx_get_config)();
 
-typedef zmsx_MidiType (*pfn_zmsx_identify_midi_type)(uint32_t* id, int size);
+typedef ZMSXMidiType (*pfn_zmsx_identify_midi_type)(uint32_t* id, int size);
 
-typedef zmsx_MidiSource (*pfn_zmsx_create_midi_source)(
+typedef ZMSXMidiSource (*pfn_zmsx_create_midi_source)(
 	const uint8_t* data,
 	size_t length,
-	zmsx_MidiType miditype
+	ZMSXMidiType miditype
 );
 
 typedef bool (*pfn_zmsx_midi_dump_wave)(
-	zmsx_MidiSource source,
-	zmsx_MidiDevice devtype,
+	ZMSXMidiSource source,
+	ZMSXMidiDevice devtype,
 	const char* devarg,
 	const char* outname,
 	int subsong,
 	int samplerate
 );
 
-typedef zmsx_MusicStream (*pfn_zmsx_open_song)(
-	zmsx_CustomReader* reader, zmsx_MidiDevice device, const char* Args
+typedef ZMSXMusicStream* (*pfn_zmsx_open_song)(
+	ZMSXCustomReader* reader, ZMSXMidiDevice device, const char* Args
 );
 
-typedef zmsx_MusicStream (*pfn_zmsx_open_song_file)(
-	const char* filename, zmsx_MidiDevice device, const char* Args
+typedef ZMSXMusicStream* (*pfn_zmsx_open_song_file)(
+	const char* filename, ZMSXMidiDevice device, const char* Args
 );
 
-typedef zmsx_MusicStream (*pfn_zmsx_open_song_mem)(
-	const void* mem, size_t size, zmsx_MidiDevice device, const char* Args
+typedef ZMSXMusicStream* (*pfn_zmsx_open_song_mem)(
+	const void* mem, size_t size, ZMSXMidiDevice device, const char* Args
 );
 
-typedef zmsx_MusicStream (*pfn_zmsx_open_song_cd)(int track, int cdid);
+typedef ZMSXMusicStream* (*pfn_zmsx_open_song_cd)(int track, int cdid);
 
 typedef bool (*pfn_zmsx_fill_stream)(
-	zmsx_MusicStream stream,
+	ZMSXMusicStream* stream,
 	void* buff,
 	int len
 );
 
 typedef bool (*pfn_zmsx_start)(
-	zmsx_MusicStream song,
+	ZMSXMusicStream* song,
 	int subsong,
 	bool loop
 );
 
-typedef void (*pfn_zmsx_pause)(zmsx_MusicStream song);
+typedef void (*pfn_zmsx_pause)(ZMSXMusicStream* song);
 
-typedef void (*pfn_zmsx_resume)(zmsx_MusicStream song);
+typedef void (*pfn_zmsx_resume)(ZMSXMusicStream* song);
 
-typedef void (*pfn_zmsx_update)(zmsx_MusicStream song);
+typedef void (*pfn_zmsx_update)(ZMSXMusicStream* song);
 
-typedef bool (*pfn_zmsx_is_playing)(zmsx_MusicStream song);
+typedef bool (*pfn_zmsx_is_playing)(ZMSXMusicStream* song);
 
-typedef void (*pfn_zmsx_stop)(zmsx_MusicStream song);
+typedef void (*pfn_zmsx_stop)(ZMSXMusicStream* song);
 
-typedef void (*pfn_zmsx_close)(zmsx_MusicStream song);
+typedef void (*pfn_zmsx_close)(ZMSXMusicStream* song);
 
-typedef bool (*pfn_zmsx_set_subsong)(zmsx_MusicStream song, int subsong);
+typedef bool (*pfn_zmsx_set_subsong)(ZMSXMusicStream* song, int subsong);
 
-typedef bool (*pfn_zmsx_is_looping)(zmsx_MusicStream song);
+typedef bool (*pfn_zmsx_is_looping)(ZMSXMusicStream* song);
 
-typedef bool (*pfn_zmsx_is_midi)(zmsx_MusicStream song);
+typedef bool (*pfn_zmsx_is_midi)(ZMSXMusicStream* song);
 
-typedef void (*pfn_zmsx_volume_changed)(zmsx_MusicStream song);
+typedef void (*pfn_zmsx_volume_changed)(ZMSXMusicStream* song);
 
 typedef bool (*pfn_zmsx_write_smf)(
-	zmsx_MidiSource source,
+	ZMSXMidiSource source,
 	const char* fn,
 	int looplimit
 );
 
-typedef void (*pfn_zmsx_get_stream_info)(zmsx_MusicStream song, zmsx_SoundStreamInfo* info);
+typedef void (*pfn_zmsx_get_stream_info)(ZMSXMusicStream* song, ZMSXSoundStreamInfo* info);
 
 typedef void (*pfn_zmsx_get_stream_info_ex)(
-	zmsx_MusicStream song,
-	zmsx_SoundStreamInfoEx* info
+	ZMSXMusicStream* song,
+	ZMSXSoundStreamInfoEx* info
 );
 
 typedef bool (*pfn_zmsx_config_set_int)(
-	zmsx_IntConfigKey key,
-	zmsx_MusicStream song,
+	ZMSXIntConfigKey key,
+	ZMSXMusicStream* song,
 	int value,
 	int* pRealValue
 );
 
 typedef bool (*pfn_zmsx_config_set_float)(
-	zmsx_FloatConfigKey key,
-	zmsx_MusicStream song,
+	ZMSXFloatConfigKey key,
+	ZMSXMusicStream* song,
 	float value,
 	float* pRealValue
 );
 
 typedef bool (*pfn_zmsx_config_set_string)(
-	zmsx_StringConfigKey key,
-	zmsx_MusicStream song,
+	ZMSXStringConfigKey key,
+	ZMSXMusicStream* song,
 	const char* value
 );
 
-typedef const char* (*pfn_zmsx_get_stats)(zmsx_MusicStream song);
+typedef const char* (*pfn_zmsx_get_stats)(ZMSXMusicStream* song);
 
 typedef struct SoundDecoder* (*pfn_zmsx_create_decoder)(
 	const uint8_t* data,
@@ -601,8 +603,8 @@ typedef struct SoundDecoder* (*pfn_zmsx_create_decoder)(
 typedef void (*pfn_zmsx_sounddecoder_get_info)(
 	struct SoundDecoder* decoder,
 	int* samplerate,
-	zmsx_ChannelConfig* chans,
-	zmsx_SampleType* type
+	ZMSXChannelConfig* chans,
+	ZMSXSampleType* type
 );
 
 typedef size_t (*pfn_zmsx_sounddecoder_read)(
@@ -622,6 +624,6 @@ typedef void (*pfn_zmsx_find_loop_tags)(
 	bool* endass
 );
 
-typedef const zmsx_MidiOutDevice* (*pfn_zmsx_get_midi_devices)(int* pAmount);
+typedef const ZMSXMidiOutDevice* (*pfn_zmsx_get_midi_devices)(int* pAmount);
 
 #endif

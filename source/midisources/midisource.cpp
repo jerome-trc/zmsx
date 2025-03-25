@@ -418,13 +418,13 @@ extern int MUSHeaderSearch(const uint8_t *head, int len);
 //
 //==========================================================================
 
-DLL_EXPORT zmsx_MidiType zmsx_identify_midi_type(uint32_t *id, int size)
+DLL_EXPORT ZMSXMidiType zmsx_identify_midi_type(const uint32_t *id, int size)
 {
 	// Check for MUS format
 	// Tolerate sloppy wads by searching up to 32 bytes for the header
-	if (MUSHeaderSearch((uint8_t*)id, size) >= 0)
+	if (MUSHeaderSearch((const uint8_t*)id, size) >= 0)
 	{
-		return MIDI_MUS;
+		return zmsx_midi_mus;
 	}
 	// Check for HMI format
 	else
@@ -432,14 +432,14 @@ DLL_EXPORT zmsx_MidiType zmsx_identify_midi_type(uint32_t *id, int size)
 		id[1] == MAKE_ID('M','I','D','I') &&
 		id[2] == MAKE_ID('S','O','N','G'))
 	{
-		return MIDI_HMI;
+		return zmsx_midi_hmi;
 	}
 	// Check for HMP format
 	else
 	if (id[0] == MAKE_ID('H','M','I','M') &&
 		id[1] == MAKE_ID('I','D','I','P'))
 	{
-		return MIDI_HMI;
+		return zmsx_midi_hmi;
 	}
 	// Check for XMI format
 	else
@@ -448,23 +448,23 @@ DLL_EXPORT zmsx_MidiType zmsx_identify_midi_type(uint32_t *id, int size)
 		((id[0] == MAKE_ID('C','A','T',' ') || id[0] == MAKE_ID('F','O','R','M')) &&
 		 id[2] == MAKE_ID('X','M','I','D')))
 	{
-		return MIDI_XMI;
+		return zmsx_midi_xmi;
 	}
 	// Check for MIDS format
 	else
 	if (id[0] == MAKE_ID('R','I','F','F') &&
 		id[2] == MAKE_ID('M','I','D','S'))
 	{
-		return MIDI_MIDS;
+		return zmsx_midi_mids;
 	}
 	// Check for MIDI format
 	else if (id[0] == MAKE_ID('M','T','h','d'))
 	{
-		return MIDI_MIDI;
+		return zmsx_midi_midi;
 	}
 	else
 	{
-		return MIDI_NOTMIDI;
+		return zmsx_midi_notmidi;
 	}
 }
 
@@ -474,30 +474,30 @@ DLL_EXPORT zmsx_MidiType zmsx_identify_midi_type(uint32_t *id, int size)
 //
 //==========================================================================
 
-DLL_EXPORT zmsx_MidiSource zmsx_create_midi_source(const uint8_t *data, size_t length, zmsx_MidiType miditype)
+DLL_EXPORT ZMSXMidiSource* zmsx_create_midi_source(const uint8_t *data, size_t length, ZMSXMidiType miditype)
 {
 	try
 	{
 		MIDISource* source;
 		switch (miditype)
 		{
-		case MIDI_MUS:
+		case zmsx_midi_mus:
 			source = new MUSSong2(data, length);
 			break;
 
-		case MIDI_MIDI:
+		case zmsx_midi_midi:
 			source = new MIDISong2(data, length);
 			break;
 
-		case MIDI_HMI:
+		case zmsx_midi_hmi:
 			source = new HMISong(data, length);
 			break;
 
-		case MIDI_XMI:
+		case zmsx_midi_xmi:
 			source = new XMISong(data, length);
 			break;
 
-		case MIDI_MIDS:
+		case zmsx_midi_mids:
 			source = new MIDSSong(data, length);
 			break;
 
